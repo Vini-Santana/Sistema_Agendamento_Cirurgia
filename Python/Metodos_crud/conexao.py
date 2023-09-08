@@ -7,6 +7,3 @@ conexaov = mysql.connector.connect(
     database='cirurgia',
 )
 cursor = conexaov.cursor()
-
-# cursor.close()
-# conexaov.close()
