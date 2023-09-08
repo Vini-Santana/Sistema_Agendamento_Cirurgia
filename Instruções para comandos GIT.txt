@@ -1,0 +1,38 @@
+***PRIMEIROS PASSOS***
+
+1. INSTALE O GIT
+https://gitforwindows.org/
+2. ENTRE EM UMA PASTA > BOTÃO DIREITO >  Open GUI Bash here
+3. CRIANDO UM REPOSITÓRIO LOCAL
+COMANDO: git init
+4. CONECTAR O REPOSITÓRIO LOCAL COM O GITHUB
+COMANDO: git remote add origin https://github.com/Vini-Santana/Sistema_Agendamento_Cirurgia.git
+5. CLONANDO O REPOSITÓRIO DO GITGUB LOCALMENTE (vai instalar na sua máquina todos os arquivos que estão no repositório do github)
+COMANDO: git clone https://github.com/Vini-Santana/Sistema_Agendamento_Cirurgia.git
+
+*****************************************************
+USEM APENAS A BRANCH DA SUA ATIVIDADE E APENAS FAÇAM MERGE COM AS FUNCIONALIDADES ESTÁVEIS(FUNCIONANDO)
+*****************************************************
+**BRANCH** (localonde cada parte do projeto vai desenvolver suas atividades)
+--CRIANDO UMA BRANCH NOVA
+-COMANDO: git checkout -b "nome_da_branch"  (já vai selecionar automaticamente)
+
+--MUDANDO DE BRANCH
+-COMANDO: git checkout nome_da_branch
+
+**COMMIT**
+--PREPARANDO OS ARQUIVOS PARA COMMIT
+-COMANDO: git add .
+
+--COMMITANDO ARQUIVOS(AINDA NÃO VOU ESTAR NO GITHUB)
+-COMANDO: git commit -m "insira uma descrição do commit"
+
+--CONFIRMANDO COMMIT
+- git push origin nome_da_branch
+
+**MERGE** (atualiza a branch atual com o último commit da branch inserida no comando)
+- COMANDO: git merge nome_da_branch_com_as_alterações
+- COMANDO: git push origin branch_que_terá_alterações
+
+**GIT PULL** (puxa as alterações do úlitmo commit para a sua máquina)
+- COMANDO: git pull origin nome_da_branch
