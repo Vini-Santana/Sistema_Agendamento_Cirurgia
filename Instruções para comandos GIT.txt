@@ -31,6 +31,7 @@ USEM APENAS A BRANCH DA SUA ATIVIDADE E APENAS FAÇAM MERGE COM AS FUNCIONALIDAD
 - git push origin nome_da_branch
 
 **MERGE** (atualiza a branch atual com o último commit da branch inserida no comando)
+SE VC QUER ATUALIZAR A MAIN, DEVE FAZER UM git checkout main
 - COMANDO: git merge nome_da_branch_com_as_alterações
 - COMANDO: git push origin branch_que_terá_alterações
 
