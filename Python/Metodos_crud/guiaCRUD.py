@@ -15,6 +15,12 @@ cursor = conexao.cursor()
 # comando = f'INSERT INTO vendas (nome_produto, valor)VALUES ("{nome_produto}", {valor})'
 # cursor.execute(comando)
 # conexao.commit()
+#
+#id = 4
+#data = "STR_TO_DATE('1900-10-04 22:23:00', '%Y-%m-%d %k:%i:%s')"
+#comando = f'INSERT INTO testeData (id, dataCirurgia) VALUES ("{id}", {data})'
+#cursor.execute(comando)
+#conexao.commit()
 
 # READ
 comando_read = 'SELECT * FROM vendas'
