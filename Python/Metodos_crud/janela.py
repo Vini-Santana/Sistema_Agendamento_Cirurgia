@@ -1,45 +1,53 @@
 import customtkinter
+from tkinter import messagebox
 import crud
 import conexao
+from datetime import datetime
 
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("dark-blue")
-
 janela = customtkinter.CTk()
 janela.geometry("500x400")
 janela.title("Cadastro")
 
 #CAMPOS PARA INSERIR UM PRODUTO NO BANCO
-entry_id = customtkinter.CTkEntry(janela, placeholder_text="ID")
-entry_id.pack(padx=10, pady=10)
-
 entry_produto = customtkinter.CTkEntry(janela, placeholder_text="produto")
 entry_produto.pack(padx=10, pady=10)
-
 entry_valor = customtkinter.CTkEntry(janela, placeholder_text="valor")
 entry_valor.pack(padx=10, pady=10)
 def inserir():
-    #print(entry_produto.get(), entry_valor.get())
     crud.create(entry_produto.get(), entry_valor.get())
-
 botao2 = customtkinter.CTkButton(janela, text="criar", command=inserir)
 botao2.pack(padx=10, pady=10)
 
-#INSERINDO NA TABELA DO TIPO DATE
-entry_valor_Data = customtkinter.CTkEntry(janela, placeholder_text="data")
-entry_valor_Data.pack(padx=10, pady=10)
 
+
+#EXEMPLO DE INSERÇÃO NA TABELA TIPO DATETIME
+entry_valor_DataInicio = customtkinter.CTkEntry(janela, placeholder_text="dataInicio")
+entry_valor_DataInicio.pack(padx=10, pady=10)
+entry_valor_DataFim = customtkinter.CTkEntry(janela, placeholder_text="dataFim")
+entry_valor_DataFim.pack(padx=10, pady=10)
 def inserirTesteData():
-    #print(entry_id.get(), entry_valor_Data.get())
-    crud.createTesteData(entry_id.get(), entry_valor_Data.get())
-
+    if crud.validaParametroEntreDtInicioDtfimCom(datetime.strptime(entry_valor_DataInicio.get(), '%d/%m/%Y %H:%M:%S'), datetime.strptime(entry_valor_DataFim.get(), '%d/%m/%Y %H:%M:%S')) == "AAAAAAAAAAAAAAAA":
+        print("DEU BOM!!")
+        crud.createTesteData(datetime.strptime(entry_valor_DataInicio.get(), '%d/%m/%Y %H:%M:%S'), datetime.strptime(entry_valor_DataFim.get(), '%d/%m/%Y %H:%M:%S'))
+    else:
+        print("ERROOOOOOOOOOOOOOOOOOOOOOOOOO")
 botao2 = customtkinter.CTkButton(janela, text="criarData", command=inserirTesteData)
 botao2.pack(padx=10, pady=10)
 
 
-botao = customtkinter.CTkButton(janela, text="deletar")
-botao.pack(padx=10, pady=10)
 
+#EXEMPLO DE EXCEÇÃO - ABRE ALERTA DO TKINTER
+entry_valor_ESPECIALIZACAO = customtkinter.CTkEntry(janela, placeholder_text="ESPECIALIZAÇÃO")
+entry_valor_ESPECIALIZACAO.pack(padx=10, pady=10)
+def inserirEspecializacao():
+    try:
+        crud.createEspecializacao(entry_valor_ESPECIALIZACAO.get())
+    except conexao.mysql.connector.errors.IntegrityError as error:
+       messagebox.showinfo("cuidado", "AAAAAAAAA")
+botao = customtkinter.CTkButton(janela, text="exemplo exception", command=inserirEspecializacao)
+botao.pack(padx=10, pady=10)
 
 janela.mainloop()
 conexao.cursor.close()
