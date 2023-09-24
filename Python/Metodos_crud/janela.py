@@ -10,18 +10,6 @@ janela = customtkinter.CTk()
 janela.geometry("500x400")
 janela.title("Cadastro")
 
-#CAMPOS PARA INSERIR UM PRODUTO NO BANCO
-entry_produto = customtkinter.CTkEntry(janela, placeholder_text="produto")
-entry_produto.pack(padx=10, pady=10)
-entry_valor = customtkinter.CTkEntry(janela, placeholder_text="valor")
-entry_valor.pack(padx=10, pady=10)
-def inserir():
-    crud.create(entry_produto.get(), entry_valor.get())
-botao2 = customtkinter.CTkButton(janela, text="criar", command=inserir)
-botao2.pack(padx=10, pady=10)
-
-
-
 #EXEMPLO DE INSERÇÃO NA TABELA TIPO DATETIME
 entry_valor_DataInicio = customtkinter.CTkEntry(janela, placeholder_text="dataInicio")
 entry_valor_DataInicio.pack(padx=10, pady=10)
@@ -35,7 +23,6 @@ def inserirTesteData():
         print("ERROOOOOOOOOOOOOOOOOOOOOOOOOO")
 botao2 = customtkinter.CTkButton(janela, text="criarData", command=inserirTesteData)
 botao2.pack(padx=10, pady=10)
-
 
 
 #EXEMPLO DE EXCEÇÃO - ABRE ALERTA DO TKINTER
