@@ -1,5 +1,4 @@
 import conexao
-import datetime
 ##EXEMPLOS DE INSERÇÃO
 
 def createTesteData(data, data2):
@@ -79,7 +78,8 @@ def createPaciente(nome, dtnascimento, endereco, numCarteira, email, fkRecepcion
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
     
-def createCirurgia(dtFim, dtInicio, fkCirurgiao, fkRecepcionista, fkSala, fkTipo, fkPaciente, fkInstrumentador, fkAnestesista):
+def createCirurgia(dtInicio, dtFim, fkCirurgiao, fkRecepcionista, fkSala, fkTipo, fkPaciente, fkInstrumentador, fkAnestesista):
+    
     comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,FKCIRURGIAO,FKRECEPCIONISTA,FKSALA,FKTIPO,FKPACIENTE,FKINSTRUMENTADOR,FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}",{fkCirurgiao},{fkRecepcionista},{fkSala},{fkTipo},{fkPaciente},{fkInstrumentador},{fkAnestesista})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
@@ -88,38 +88,41 @@ def createCirurgia_Enfermeiro(fkCirurgia, fkEnfermeiro):
     comando = f'INSERT INTO CIRURGIA_ENFERMEIRO(FKCIRURGIA,FKENFERMEIRO) VALUES ({fkCirurgia},{fkEnfermeiro})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
-def createTelefone(ddd, telefone, tabela, fkRegistro):
-    match tabela:
+def createTelefone(ddd, telefone, nomeDaTabela, fkRegistro):
+    match nomeDaTabela:
         case 1:
-            tabela = 'FKENFERMEIRO'
+            nomeDaTabela = 'FKENFERMEIRO'
         case 2:
-            tabela = "FKCIRURGIAO"
+            nomeDaTabela = "FKCIRURGIAO"
         case 3:
-            tabela = 'FKPACIENTE'
+            nomeDaTabela = 'FKPACIENTE'
         case 4:
-            tabela = "FKINSTRUMENTADOR"
+            nomeDaTabela = "FKINSTRUMENTADOR"
         case 5:
-            tabela = "FKANESTESISTA"
+            nomeDaTabela = "FKANESTESISTA"
         case 6:
-            tabela = "FKRECEPCIONISTA"
+            nomeDaTabela = "FKRECEPCIONISTA"
         case _:
             print("Erro")####
-    comando = f'INSERT INTO TELEFONE(DDD,TELEFONE,{tabela}) VALUES ({ddd},"{telefone}",{fkRegistro})'
+    comando = f'INSERT INTO TELEFONE(DDD,TELEFONE,{nomeDaTabela}) VALUES ({ddd},"{telefone}",{fkRegistro})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
-    
-def validaParametroEntreDtInicioDtfimCom(dtInicio, dtFim):
-    consulta = f'SELECT * FROM TESTE WHERE ("{dtInicio}" > DTINICIO AND "{dtInicio}" < DTFIM) OR ("{dtFim}" > DTINICIO AND "{dtFim}" < DTFIM) OR ("{dtInicio}" < DTINICIO AND "{dtFim}" > DTFIM)'
-    conexao.cursor.execute(consulta)
-    resultadoFim = conexao.cursor.fetchall()
-    #print(resultadoFim)
-    if resultadoFim != []:
-        return "ERROOOOOOOOOOOOOOOOOOOOOOOOOO"
-    else:
-        return "AAAAAAAAAAAAAAAA"
-    #print(resultadoFim)
-    
-print(validaParametroEntreDtInicioDtfimCom("2023/02/03 04:03:03", "2023/02/03 07:03:03"))
-##UPDATE##
 
-##READ##
+#DELETE#
+
+def delete(nomeDaTabela, id):
+    comando = f'DELETE FROM {nomeDaTabela} WHERE ID{nomeDaTabela} = {id}'
+    conexao.cursor.execute(comando)
+    conexao.conexaov.commit()
+
+#UPDATE#
+
+def update(nomeDaTabela, nomeDaColuna, valor, IdDoRegistro):
+    comando = f'UPDATE {nomeDaTabela} SET {nomeDaColuna} = "{valor}" WHERE ID{nomeDaTabela} = {IdDoRegistro}'
+    conexao.cursor.execute(comando)
+    conexao.conexaov.commit()
+
+
+#READ#
+
+    
