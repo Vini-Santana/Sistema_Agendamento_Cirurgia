@@ -1,6 +1,6 @@
 import crud
 
-#crud.createEspecializacao("Coração")
+#crud.createEspecializacao("Cérrebro")
 #crud.createSala(23)
 #crud.createEquipamentos("Bisturi")
 #crud.createPerfilDeAcesso("1234","master",1)
@@ -14,7 +14,7 @@ import crud
 #crud.createRecepcionista("1985/04/10", "Mario", "mario@gmail.com", 1)
 #crud.createSala_Equipamentos(1,1)
 #crud.createPaciente("Claudio", "1976/03/02","Av. Brasil 198", "12345678912", "cl@gmail.com", 1)
-#crud.createCirurgia("2023/02/03 04:03:03", "2023/02/03 07:03:03", 1,1,1,1,1,1,1)
+crud.createCirurgia("2023/02/03 06:03:03", "2023/02/03 12:03:03", 1,1,1,1,1,1,1)
 #crud.createTelefone(19,"985919213", 3, 1)
-#crud.createCirurgia_Enfermeiro(1,1)
-#crud.createCirurgia_Enfermeiro(1,2)
+crud.createCirurgia_Enfermeiro(1,1)
+crud.createCirurgia_Enfermeiro(1,2)
