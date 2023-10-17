@@ -22,11 +22,6 @@ def createEquipamentos(equip):
     comando = f'INSERT INTO EQUIPAMENTOS(NOME) VALUES ("{equip}")'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
-
-def createEquipamentos(equip):
-    comando = f'INSERT INTO EQUIPAMENTOS(NOME) VALUES ("{equip}")'
-    conexao.cursor.execute(comando)
-    conexao.conexaov.commit()
     
 def createPerfilDeAcesso(senha, usuario, nivel):
     comando = f'INSERT INTO PERFILDEACESSO(SENHA,USUARIO,NIVEL) VALUES ("{senha}","{usuario}",{nivel})'
@@ -124,5 +119,10 @@ def update(nomeDaTabela, nomeDaColuna, valor, IdDoRegistro):
 
 
 #READ#
-
+def read(nomeDaTabela, atributo, id):
+    consulta = f'SELECT {atributo} FROM {nomeDaTabela} WHERE ID{nomeDaTabela} = {id}'
+    conexao.cursor.execute(consulta)
+    resultadoFim = conexao.cursor.fetchall()
+    return resultadoFim
+print(read("cirurgia", "fkCirurgiao, fkAnestesista", 2))
     
