@@ -2,10 +2,11 @@ import customtkinter as ctk
 from tkinter import *
 from tkinter import messagebox
 
-from crud import createPerfilDeAcesso, obter_tipos_de_cirurgias, obter_salas
-from validacoes import validaUsuarioSenha_RetornaNivelAcesso, validaDtinicioMenorDtfim
+from crud import createPerfilDeAcesso, obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros
+from validacoes import validaUsuarioSenha_RetornaNivelAcesso, validaDtinicioMenorDtfim, validaHorario
 
 # Criação de outras telas e funções
+
 
 def login():
     usuario = entry_usuario.get()
@@ -27,6 +28,28 @@ def mostrar_senha():
         entry_senha.configure(show="*")
 
 def tela_administrador():
+
+    def formatar_horario(event):
+        entry_data_inicio = event.widget
+        s = entry_data_inicio.get()
+
+        if len(s) == 2 and s.count(':') == 0:
+            entry_data_inicio.insert(ctk.END, ':')
+
+        if len(s) > 5:
+            entry_data_inicio.delete(5, ctk.END)
+    
+    def validarhora():
+        horario_inicio = entry_horario_inicio.get()
+        horario_final = entry_data_fim.get()
+
+        resultado = validaHorario(horario_inicio, horario_final)
+
+        if resultado is True:
+            print("Horario válido")
+        else:
+            print("Erro:", resultado)
+
     frame_img.pack_forget()
     frame_login.pack_forget()
 
@@ -57,12 +80,9 @@ def tela_administrador():
     label_horario_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORARIO INICIAL", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
     label_horario_cirurgia.place(x=510, y=250)
 
-    horario_selecionado = ctk.StringVar()
-    horario_opcoes = [f'{hora:02d}:00' for hora in range(24)]
-    combo_horario_cirurgia = ctk.CTkComboBox(frame_adm_agenda, variable=horario_selecionado, values=horario_opcoes,
-                                            fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000",
-                                            dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC")
-    combo_horario_cirurgia.place(x=510, y=275)
+    entry_horario_inicio = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000")
+    entry_horario_inicio.place(x=510, y=275)
+    entry_horario_inicio.bind("<KeyRelease>", formatar_horario)
 
     label_medio_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="TEMPO MEDIO", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
     label_medio_cirurgia.place(x=355, y=320)
@@ -72,9 +92,10 @@ def tela_administrador():
 
     label_hora_final_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORA FINAL PREVISTA", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
     label_hora_final_cirurgia.place(x=500, y=320)
-
+    
     entry_data_fim = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000")
     entry_data_fim.place(x=510, y=350)
+    entry_data_fim.bind("<KeyRelease>", formatar_horario)
 
     def validar_data():
         data_inicio = entry_data_inicio.get()
@@ -87,8 +108,11 @@ def tela_administrador():
         else:
             print("Erro:", resultado)
 
-    botao_validar = ctk.CTkButton(frame_adm_agenda, text="Proximo", command=validar_data)
-    botao_validar.place(x=430, y=450)
+    botao_validar = ctk.CTkButton(frame_adm_agenda, text="Validar Data", command=validar_data)
+    botao_validar.place(x=500, y=450)
+
+    botao_validar_hora = ctk.CTkButton(frame_adm_agenda, text="validar hora", command=validarhora)
+    botao_validar_hora.place(x=320, y=450)
 
     tipos_salas = obter_salas()
 
@@ -98,6 +122,64 @@ def tela_administrador():
                                         dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
     sala_cirurgia.place(x=350, y=400)
 
+    def tela_agenda():
+        def voltar_para_tela_anterior():
+            frame_agenda.pack_forget()
+            tela_administrador()
+
+        frame_adm_agenda.pack_forget()
+
+        frame_agenda = ctk.CTkFrame(tela, width=1000, height=600)
+        frame_agenda.pack()
+
+        label = ctk.CTkLabel(frame_agenda, bg_color="#000000", width=985, height=585, text="", fg_color="#ffffff", corner_radius=12)
+        label.place(x=10, y=10)
+
+        cirurgiaos = obter_cirurgiao()
+
+        cirurgiao_selecionado = ctk.StringVar()
+        cirurgiao_box = ctk.CTkComboBox(frame_agenda, variable=cirurgiao_selecionado, values=cirurgiaos, 
+                                        fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000",
+                                        dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
+        cirurgiao_box.place(x=350,y=200)
+
+        anestesista = obter_anestesista()
+
+        anestesista_selecionado = ctk.StringVar()
+        anestesista_box = ctk.CTkComboBox(frame_agenda, variable=anestesista_selecionado, values=anestesista, 
+                                        fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000",
+                                        dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
+        anestesista_box.place(x=350,y=240)
+
+        instrumentador = obter_instrumentador()
+
+        instrumentador_selecionado = ctk.StringVar()
+        instrumentador_box = ctk.CTkComboBox(frame_agenda, variable=instrumentador_selecionado, values=instrumentador, 
+                                        fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000",
+                                        dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
+        instrumentador_box.place(x=350,y=280)
+
+        botao_voltar = ctk.CTkButton(frame_agenda, text="Voltar", command=voltar_para_tela_anterior)
+        botao_voltar.place(x=500, y=500)
+
+        enfermeiros = buscar_enfermeiros()
+
+        estado_cheeckbox = [ctk.BooleanVar() for _ in range(len(enfermeiros))]
+
+        for i, enfermerio in enumerate(enfermeiros):
+            cheekbox = ctk.CTkCheckBox(frame_agenda, text=enfermerio[0], variable=estado_cheeckbox[i])
+            cheekbox.place(x=400, y=i * 30 + 400)
+        
+        def obter_selecionados():
+            selecionados = [enfermeiros[i][0] for i, estado in enumerate(estado_cheeckbox) if estado.get()]
+            print("Itens selecionados: ", selecionados)
+        
+        botao_obter_selecionados = ctk.CTkButton(frame_agenda, text="Obter Itens Selecionados", command=obter_selecionados)
+        botao_obter_selecionados.place(x=500, y=500)
+
+    botao_proximo = ctk.CTkButton(frame_adm_agenda, text="Proximo", command=tela_agenda, fg_color="#00940A", text_color="#000000")
+    botao_proximo.place(x=600, y=500)
+
 
 def tela_comum():
         frame_img.pack_forget()
@@ -106,6 +188,7 @@ def tela_comum():
         label_texto_tela_cadastro2 = ctk.CTkLabel(tela, text="LOGIN ACESSO 2@", bg_color="#ffffff", text_color="#000000", font=("Roboto", 22, 'bold'))
         label_texto_tela_cadastro2.place(x=115, y=35)
         pass
+
 
 def tela_registro():
 

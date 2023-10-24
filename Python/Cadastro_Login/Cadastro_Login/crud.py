@@ -137,4 +137,27 @@ def obter_salas():
     conexao.cursor.execute(comando)
     tipos_salas = [str(row[0]) for row in conexao.cursor.fetchall()]
     return tipos_salas
-   
+
+def obter_cirurgiao():
+    comando = "SELECT NOME FROM CIRURGIAO"
+    conexao.cursor.execute(comando)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
+
+def obter_anestesista():
+    comando = "SELECT NOME FROM ANESTESISTA"
+    conexao.cursor.execute(comando)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
+
+def obter_instrumentador():
+    comando = "SELECT NOME FROM INSTRUMENTADOR"
+    conexao.cursor.execute(comando)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
+
+def buscar_enfermeiros():
+    comando = "SELECT NOME FROM ENFERMEIRO"
+    conexao.cursor.execute(comando)
+    resultado = conexao.cursor.fetchall()
+    return resultado

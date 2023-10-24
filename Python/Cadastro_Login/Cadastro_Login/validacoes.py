@@ -25,6 +25,24 @@ def validaDtinicioMenorDtfim(data_inicio, data_fim):
     except ValueError as e:
         return str(e)
     
+def validaHorario(horario_inicio, horario_final):
+    try:
+        horario_inicio_dt = datetime.strptime(horario_inicio, "%H:%M")
+        horario_final_dt = datetime.strptime(horario_final, "%H:%M")
+
+        if horario_inicio_dt >= horario_final_dt:
+            raise ValueError("O horario inicial deve ser menor que o horario final previsto")
+
+        diferenca_minutos = (horario_final_dt - horario_inicio_dt).total_seconds() / 60
+
+        if diferenca_minutos < 60:
+            raise ValueError("Deve haver pelo menos 1 hora de diferença entre o horário inicial e o final.")
+        
+        return True
+    
+    except ValueError as e:
+        return str(e)
+    
 #VALIDA SE TEM SALA, CIRURGIÃO, ANESTESISTA, INSTRUMENTADOR E ENFERIMEIRO DISPONÍVEIS PARA CIRURGIA
 def validaProfissionaisESalaDisponiveis(dtInicio, dtFim):
     consulta = f'SELECT IDSALA FROM SALA WHERE IDSALA NOT IN (SELECT FKSALA FROM CIRURGIA WHERE ("{dtInicio}" > DTINICIO AND "{dtInicio}" < DTFIM) OR ("{dtFim}" > DTINICIO AND "{dtFim}" < DTFIM) OR ("{dtInicio}" < DTINICIO AND "{dtFim}" > DTFIM))'
