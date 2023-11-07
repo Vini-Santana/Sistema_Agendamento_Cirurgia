@@ -1,5 +1,4 @@
 import crud
-import time
 
 #crud.createEspecializacao("Cérrebro")
 #crud.createSala(23)

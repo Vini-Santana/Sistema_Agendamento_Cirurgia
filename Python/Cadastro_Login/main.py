@@ -2,7 +2,6 @@ import customtkinter as ctk
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime, timedelta, time
-
 from crud import createPerfilDeAcesso, obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio
 from validacoes import validaUsuarioSenha_RetornaNivelAcesso
 
@@ -384,7 +383,7 @@ ctk.set_default_color_theme("dark-blue")
 tela = ctk.CTk()
 tela.geometry("1000x600")
 tela.title("Cadastro de Cirurgias")
-tela.iconbitmap("icone.ico")
+tela.iconbitmap("Python\Cadastro_Login\icone.ico")
 tela.resizable(False, False)
 
 frame_img = ctk.CTkFrame(tela, width=500, height=600)
@@ -393,7 +392,7 @@ frame_img.pack(side=LEFT)
 frame_login = ctk.CTkFrame(tela, width=500, height=600)
 frame_login.pack(side=RIGHT)
 
-img = PhotoImage(file="cirurgia.png")
+img = PhotoImage(file="Python\Cadastro_Login\cirurgia.png")
 Label_img = ctk.CTkLabel(frame_img, image=img, text="")
 Label_img.place(x=5, y=80)
 
