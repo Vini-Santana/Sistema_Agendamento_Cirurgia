@@ -396,20 +396,20 @@ img = PhotoImage(file="Python\Cadastro_Login\cirurgia.png")
 Label_img = ctk.CTkLabel(frame_img, image=img, text="")
 Label_img.place(x=5, y=80)
 
-label_tt = ctk.CTkLabel(frame_img, text="Nome do App", font=("Roboto", 20, 'bold'), text_color="#205d5e")
-label_tt.place(x=200, y=50)
+label_tt = ctk.CTkLabel(frame_img, text="Sistema Gerenciador de Cirurgias", font=("Roboto", 20, 'bold'), text_color="#205d5e")
+label_tt.place(x=100, y=50)
 
 label_login = ctk.CTkLabel(frame_login, bg_color="#000000", width=350, height=350, text="", fg_color="#ffffff", corner_radius=12)
 label_login.place(x=100, y=115)
 
-label_texto = ctk.CTkLabel(label_login, text="BEM VINDO", bg_color="#ffffff", text_color="#000000", font=("Roboto", 22, 'bold'))
+label_texto = ctk.CTkLabel(label_login, text="Bem-Vindo", bg_color="#ffffff", text_color="#000000", font=("Roboto", 22, 'bold'))
 label_texto.place(x=115, y=45)
 
-entry_usuario = ctk.CTkEntry(label_login, placeholder_text="Nome do Usuario", text_color="#565656", border_width=2, width=250, height=40, font=("Roboto", 12), 
+entry_usuario = ctk.CTkEntry(label_login, placeholder_text="Digite seu usuário", text_color="#565656", border_width=2, width=250, height=40, font=("Roboto", 12), 
                              border_color="#000000", bg_color="#ffffff", placeholder_text_color="#565656", fg_color="#ffffff", corner_radius=10)
 entry_usuario.place(x=50, y=100)
 
-entry_senha = ctk.CTkEntry(label_login, placeholder_text="Senha do Usuario", placeholder_text_color="#565656", text_color="#565656", show="*",border_width=2, width=250, height=40, font=("Roboto", 12), 
+entry_senha = ctk.CTkEntry(label_login, placeholder_text="Digite sua senha", placeholder_text_color="#565656", text_color="#565656", show="*",border_width=2, width=250, height=40, font=("Roboto", 12), 
                              border_color="#000000", bg_color="#ffffff", fg_color="#ffffff", corner_radius=10)
 entry_senha.place(x=50, y=150)
 
@@ -418,7 +418,7 @@ show_password_var = ctk.BooleanVar()
 cheekbox = ctk.CTkCheckBox(label_login, text="Monstrar senha", fg_color="#000000", text_color="#000000", command=mostrar_senha, variable=show_password_var, onvalue=True, offvalue=False)
 cheekbox.place(x=50, y=200)
 
-botao_login = ctk.CTkButton(label_login, text="LOGIN", text_color="#ffffff", fg_color="#000000", corner_radius=15, font=("Roboto", 14, 'bold'), hover_color="#454545", command=login)
+botao_login = ctk.CTkButton(label_login, text="Entrar", text_color="#ffffff", fg_color="#000000", corner_radius=15, font=("Roboto", 14, 'bold'), hover_color="#454545", command=login)
 botao_login.place(x=105, y=225)
 
 label_texto_cadastro = ctk.CTkLabel(label_login, text="AINDA NÃO POSSUI CONTA?", text_color="#000000", font=("Roboto", 14, 'bold'))

@@ -18,11 +18,6 @@ def createSala(numSala):
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
     
-def createEquipamentos(equip):
-    comando = f'INSERT INTO EQUIPAMENTOS(NOME) VALUES ("{equip}")'
-    conexao.cursor.execute(comando)
-    conexao.conexaov.commit()
-    
 def createPerfilDeAcesso(senha, usuario, nivel):
     comando = f'INSERT INTO PERFILDEACESSO(SENHA,USUARIO,NIVEL) VALUES ("{senha}","{usuario}",{nivel})'
     conexao.cursor.execute(comando)
@@ -48,13 +43,13 @@ def createCirurgiao(dtnascimento, nome, email):
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
     
-def createTipo_Cirurgia(tpCirurgia, fkEspecializacao):
-    comando = f'INSERT INTO TIPO_CIRURGIA(TIPOCIRURGIA,FKESPECIALIZACAO) VALUES ("{tpCirurgia}",{fkEspecializacao})'
+def createTipo_Cirurgia(tpCirurgia, tempoMedio, fkEspecializacao):
+    comando = f'INSERT INTO TIPO_CIRURGIA(TIPOCIRURGIA, TEMPOMEDIO, FKESPECIALIZACAO) VALUES ("{tpCirurgia}", "{tempoMedio}", {fkEspecializacao})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
     
 def createEspecializacao_Cirurgiao(fkCirurgiao, fkEspecializacao):
-    comando = f'INSERT INTO TIPO_CIRURGIA(TIPOCIRURGIA,FKESPECIALIZACAO) VALUES ({fkCirurgiao},{fkEspecializacao})'
+    comando = f'INSERT INTO ESPECIALIZACAO_CIRURGIAO(FKCIRURGIAO, FKESPECIALIZACAO) VALUES ({fkCirurgiao},{fkEspecializacao})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
     
@@ -62,20 +57,15 @@ def createRecepcionista(dtnascimento, nome, email, fkPrfil):
     comando = f'INSERT INTO RECEPCIONISTA(DTNASCIMENTO,NOME,EMAIL,FKPERFILACESSO) VALUES ("{dtnascimento}","{nome}","{email}", {fkPrfil})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
-
-def createSala_Equipamentos(fkSala, fkEquipamento):
-    comando = f'INSERT INTO SALA_EQUIPAMENTOS(FKSALA,FKEQUIPAMENTO) VALUES ({fkSala},{fkEquipamento})'
-    conexao.cursor.execute(comando)
-    conexao.conexaov.commit()
     
 def createPaciente(nome, dtnascimento, endereco, numCarteira, email, fkRecepcionista):
     comando = f'INSERT INTO PACIENTE(NOME,DTNASCIMENTO,ENDERECO,NUMCARTEIRA,EMAIL,FKRECEPCIONISTA) VALUES ("{nome}","{dtnascimento}","{endereco}","{numCarteira}","{email}", {fkRecepcionista})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
-    
+
+#STATUS: 1 - AGENDADA 2 - EM ANDAMENTO  3 - CANCELADA 4 - CONCLUÍDA    
 def createCirurgia(dtInicio, dtFim, fkCirurgiao, fkRecepcionista, fkSala, fkTipo, fkPaciente, fkInstrumentador, fkAnestesista):
-    
-    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,FKCIRURGIAO,FKRECEPCIONISTA,FKSALA,FKTIPO,FKPACIENTE,FKINSTRUMENTADOR,FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}",{fkCirurgiao},{fkRecepcionista},{fkSala},{fkTipo},{fkPaciente},{fkInstrumentador},{fkAnestesista})'
+    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,FKCIRURGIAO,FKRECEPCIONISTA,FKSALA,FKTIPO,FKPACIENTE,FKINSTRUMENTADOR,FKANESTESISTA,STATUS) VALUES ("{dtInicio}","{dtFim}",{fkCirurgiao},{fkRecepcionista},{fkSala},{fkTipo},{fkPaciente},{fkInstrumentador},{fkAnestesista}, 1)'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -124,7 +114,6 @@ def read(nomeDaTabela, atributo, id):
     conexao.cursor.execute(consulta)
     resultadoFim = conexao.cursor.fetchall()
     return resultadoFim
-print(read("cirurgia", "fkCirurgiao, fkAnestesista", 2))
     
 def obter_tipos_de_cirurgias():
     comando = "SELECT TIPOCIRURGIA FROM TIPO_CIRURGIA"
@@ -163,7 +152,7 @@ def buscar_enfermeiros():
     return resultado
 
 def obter_tempo_medio(tipo_cirurgia):
-    query = "SELECT TEMPO_MEDIO FROM TIPO_CIRURGIA WHERE TIPOCIRURGIA = %s"
+    query = "SELECT TEMPOMEDIO FROM TIPO_CIRURGIA WHERE TIPOCIRURGIA = %s"
     conexao.cursor.execute(query, (tipo_cirurgia,))
 
     resultado = conexao.cursor.fetchone()
