@@ -1,5 +1,7 @@
 import conexao
 from datetime import datetime
+from tkinter import messagebox
+
 #Método valida se usuário e senha estão corretos. Se sim retorna True, se não retorna ValueError
 def validaUsuarioSenha_RetornaNivelAcesso(usuario, senha):
      
@@ -7,7 +9,7 @@ def validaUsuarioSenha_RetornaNivelAcesso(usuario, senha):
     conexao.cursor.execute(consulta)
     resultadoFim = conexao.cursor.fetchall()    
     if resultadoFim == [] or senha != resultadoFim[0][0]:
-        raise ValueError("Usuário ou senha incorretos")
+        print("Usuário ou senha incorretos")
     else:
         return True
     

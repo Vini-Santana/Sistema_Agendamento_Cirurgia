@@ -1,8 +1,10 @@
 import customtkinter as ctk
+import datetime
 from tkinter import *
 from tkinter import messagebox
-from datetime import datetime, timedelta, time
-from crud import createPerfilDeAcesso, obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio
+from datetime import datetime, timedelta, time, date
+from dateutil import parser
+from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio
 from validacoes import validaUsuarioSenha_RetornaNivelAcesso
 
 enfermeiros_texto = None
@@ -64,10 +66,10 @@ def tela_administrador():
     entry_data_inicio.bind("<KeyRelease>", formatar_data)
 
     label_data_fim_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="DATA FINAL", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
-    label_data_fim_cirurgia.place(x=360, y=270)
+    label_data_fim_cirurgia.place(x=360, y=330)
 
-    entry_data_fim = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000")
-    entry_data_fim.place(x=350, y=300)
+    entry_data_fim = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000", state="readonly")
+    entry_data_fim.place(x=350, y=360)
 
     label_horario_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORARIO INICIAL", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
     label_horario_cirurgia.place(x=510, y=210)
@@ -87,16 +89,16 @@ def tela_administrador():
     entry_horario_inicio.bind("<KeyRelease>", formatar_horario)
 
     label_medio_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="TEMPO MEDIO", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
-    label_medio_cirurgia.place(x=355, y=330)
+    label_medio_cirurgia.place(x=355, y=270)
 
-    entry_medio_cirurgia = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000")
-    entry_medio_cirurgia.place(x=350, y=360)
+    entry_medio_cirurgia = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000", state="readonly")
+    entry_medio_cirurgia.place(x=350, y=295)
 
     label_hora_final_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORA FINAL PREVISTA", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
-    label_hora_final_cirurgia.place(x=500, y=270)
+    label_hora_final_cirurgia.place(x=500, y=330)
 
-    entry_hora_fim = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000")
-    entry_hora_fim.place(x=510, y=300)
+    entry_hora_fim = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000", state="readonly")
+    entry_hora_fim.place(x=510, y=360)
 
     tipos_salas = obter_salas()
 
@@ -106,7 +108,28 @@ def tela_administrador():
                                         dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
     sala_cirurgia.place(x=350, y=400)
 
+    def validar_data_e_hora(data_str, horario_str):
+        
+        try:
+            data_cirurgia = datetime.strptime(data_str + ' ' + horario_str, '%d/%m/%Y %H:%M')
+            data_atual = datetime.now()
+
+            if data_cirurgia <= data_atual:
+                return "A data/horário da cirurgia não pode ser no passado."
+
+            return None
+        except ValueError:
+            return "A data ou horário são inválidos. Use o formato DD/MM/AAAA HH:MM."
+
     def validarhora():
+        data_inicio = entry_data_inicio.get()
+        horario_inicio = entry_horario_inicio.get()
+        erro = validar_data_e_hora(data_inicio, horario_inicio)
+
+        if erro:
+            messagebox.showerror("Data/Horário Incorretos", erro)
+            return
+
         tempo_medio = obter_tempo_medio(tipo_selecionado.get())
 
         if tempo_medio is not None:
@@ -130,8 +153,10 @@ def tela_administrador():
             if hora_final >= 24:
                 hora_final -= 24
 
+            entry_hora_fim.configure(state="normal")
             entry_hora_fim.delete(0, ctk.END)
             entry_hora_fim.insert(0, f"{hora_final:02d}:{minuto_final:02d}")
+            entry_hora_fim.configure(state="readonly")
 
             data_inicio = entry_data_inicio.get()
 
@@ -145,18 +170,22 @@ def tela_administrador():
                 data_hora_final += timedelta(days=1)
 
             data_final = data_hora_final.strftime("%d/%m/%Y")
+            entry_data_fim.configure(state="normal")  # Torna o campo editável
             entry_data_fim.delete(0, ctk.END)
             entry_data_fim.insert(0, data_final)
+            entry_data_fim.configure(state="readonly")
 
             # Atualize a entrada entry_medio_cirurgia
+            entry_medio_cirurgia.configure(state="normal")  # Torna o campo editável
             entry_medio_cirurgia.delete(0, ctk.END)
             entry_medio_cirurgia.insert(0, f"{horas_tempo_medio:02d}:{minutos_tempo_medio:02d}")
+            entry_medio_cirurgia.configure(state="readonly")  # Bloqueia o campo novamente
 
         else:
             print("Erro: Tempo médio não encontrado.")
 
-    botao_validar_hora = ctk.CTkButton(frame_adm_agenda, text="validar hora", command=validarhora)
-    botao_validar_hora.place(x=510, y=357)
+    botao_validar_hora = ctk.CTkButton(frame_adm_agenda, text="Confirmar data/hora", command=validarhora, corner_radius=12, bg_color="#ffffff")
+    botao_validar_hora.place(x=510, y=295)
 
     def tela_agenda():
         def voltar_para_tela_anterior():
@@ -288,92 +317,13 @@ def tela_administrador():
         if (not tipo_selecionado.get() or not entry_data_inicio.get() or not entry_data_fim.get() or 
             not entry_horario_inicio.get() or not entry_medio_cirurgia.get() or not entry_hora_fim.get()):
             messagebox.showerror("Erro", "Por favor, preencha todos os campos obrigatórios.")
+        elif sala_selecionada.get() == 0:
+            messagebox.showerror("Erro na Sala", "Por favor, escolha uma sala no menu suspenso.")
         else:
             tela_agenda()
             
-
     botao_proximo = ctk.CTkButton(frame_adm_agenda, text="Proximo", command=validar_campos, fg_color="#00940A", text_color="#000000", corner_radius=12, bg_color="#ffffff")
     botao_proximo.place(x=600, y=460)
-
-def tela_registro():
-
-    def mostrar_senha_reg():
-        if show_password_var_reg.get():
-            entry_senha_registro.configure(show="")
-            entry_csenha.configure(show="")
-        else:
-            entry_senha_registro.configure(show="*")
-            entry_csenha.configure(show="*")
-
-    def voltar_login():
-        frame_registro.pack_forget()
-
-        frame_login.pack(side=RIGHT)
-
-    def salvar_user():
-        usuario = entry_usuario_registro.get()
-        senha = entry_senha_registro.get()
-        confirmar_senha = entry_csenha.get()
-        nivel_aceeso = selected_option.get()
-
-        if senha != confirmar_senha:
-            messagebox.showerror(title="Erro no Registro", message="As senhas não coincidem")
-            return
-
-        if nivel_aceeso == "Adm":
-            nivel_aceeso = "1"
-        elif nivel_aceeso == "Comum":
-            nivel_aceeso = "2"
-        
-        try:
-            createPerfilDeAcesso(senha, usuario, nivel_aceeso)
-            messagebox.showinfo(title="Estado do Cadastro", message="Usuário Registrado com sucesso")
-        except Exception as e:
-            messagebox.showerror(title="Erro no Registro", message=str(e))
-
-    frame_login.pack_forget()
-
-    frame_registro = ctk.CTkFrame(tela, width=500, height=600)
-    frame_registro.pack(side=RIGHT)
-
-    label_cadastro = ctk.CTkLabel(frame_registro, bg_color="#000000", width=350, height=350, text="", fg_color="#ffffff", corner_radius=12)
-    label_cadastro.place(x=100, y=115)
-
-    label_texto_tela_cadastro = ctk.CTkLabel(label_cadastro, text="CADASTRO", bg_color="#ffffff", text_color="#000000", font=("Roboto", 22, 'bold'))
-    label_texto_tela_cadastro.place(x=115, y=35)
-
-    entry_usuario_registro = ctk.CTkEntry(label_cadastro, placeholder_text="Nome do Usuario", text_color="#565656", border_width=2, width=250, height=40, font=("Roboto", 12), 
-                             border_color="#000000", bg_color="#ffffff", placeholder_text_color="#565656", fg_color="#ffffff", corner_radius=10)
-    entry_usuario_registro.place(x=50, y=80)
-
-    entry_senha_registro = ctk.CTkEntry(label_cadastro, placeholder_text="Senha do Usuario", placeholder_text_color="#565656", text_color="#565656", show="*",
-                                        border_width=2, width=250, height=40, font=("Roboto", 12), border_color="#000000", bg_color="#ffffff", fg_color="#ffffff", corner_radius=10)
-    entry_senha_registro.place(x=50, y=130)
-
-    entry_csenha = ctk.CTkEntry(label_cadastro, placeholder_text="Confirmar senha do Usuario", placeholder_text_color="#565656", text_color="#565656", show="*",
-                                border_width=2, width=250, height=40, font=("Roboto", 12), border_color="#000000", bg_color="#ffffff", fg_color="#ffffff", corner_radius=10)
-    entry_csenha.place(x=50, y=180)
-
-    opcoes = ["Adm", "Comum"]
-    selected_option = ctk.StringVar()
-
-    combo = ctk.CTkComboBox(label_cadastro, variable=selected_option, values=opcoes, fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000", 
-                            dropdown_text_color="#000000", dropdown_hover_color="#565656")
-    combo.place(x=50, y=225)
-    combo.set(opcoes[0])
-
-    show_password_var_reg = ctk.BooleanVar()
-
-    cheekbox_reg = ctk.CTkCheckBox(label_cadastro, text="Monstrar senha", fg_color="#000000", text_color="#000000", variable=show_password_var_reg, onvalue=True, offvalue=False, command=mostrar_senha_reg)
-    cheekbox_reg.place(x=50, y=260)
-
-    botao_voltar = ctk.CTkButton(label_cadastro, text="VOLTAR", text_color="#ffffff", fg_color="#000000", corner_radius=15, font=("Roboto", 14, 'bold'), 
-                               hover_color="#454545", command=voltar_login)
-    botao_voltar.place(x=25, y=300)
-
-    botao_registrar = ctk.CTkButton(label_cadastro, text="CADASTRE-SE", text_color="#ffffff", fg_color="#000000", corner_radius=15, font=("Roboto", 14, 'bold'), 
-                               hover_color="#454545", command=salvar_user)
-    botao_registrar.place(x=175, y=300)
 
 # Cração da tela 
 
@@ -416,16 +366,9 @@ entry_senha.place(x=50, y=150)
 show_password_var = ctk.BooleanVar()
 
 cheekbox = ctk.CTkCheckBox(label_login, text="Monstrar senha", fg_color="#000000", text_color="#000000", command=mostrar_senha, variable=show_password_var, onvalue=True, offvalue=False)
-cheekbox.place(x=50, y=200)
+cheekbox.place(x=50, y=210)
 
 botao_login = ctk.CTkButton(label_login, text="Entrar", text_color="#ffffff", fg_color="#000000", corner_radius=15, font=("Roboto", 14, 'bold'), hover_color="#454545", command=login)
-botao_login.place(x=105, y=225)
-
-label_texto_cadastro = ctk.CTkLabel(label_login, text="AINDA NÃO POSSUI CONTA?", text_color="#000000", font=("Roboto", 14, 'bold'))
-label_texto_cadastro.place(x=81, y=260)
-
-botao_registro = ctk.CTkButton(label_login, text="CADASTRE-SE", text_color="#ffffff", fg_color="#000000", corner_radius=15, font=("Roboto", 14, 'bold'), 
-                               hover_color="#454545", command=tela_registro)
-botao_registro.place(x=105, y=295)
+botao_login.place(x=105, y=250)
 
 tela.mainloop()
