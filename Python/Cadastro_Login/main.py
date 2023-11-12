@@ -4,9 +4,10 @@ from tkinter import *
 from tkinter import messagebox
 from datetime import datetime, timedelta, time, date
 from dateutil import parser
-from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio
+from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio, obter_IDs_TodasCirurgias, read
 from validacoes import validaUsuarioSenha_RetornaNivelAcesso
-
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 enfermeiros_texto = None
 
 # Criação de outras telas e funções
@@ -20,6 +21,66 @@ def login():
         tela_administrador()
     else:
         messagebox.showerror(title="Erro no login", message="Credenciais inválidas")
+
+def retornaGrafico():
+    #frame_img.pack_forget()
+    #frame_login.pack_forget()
+    #Descobrindo quantas cirurgias possui de cada status
+    Agendadas = 0
+    Canceladas = 0
+    Concluidas = 0
+    todosIds = obter_IDs_TodasCirurgias()
+    for idCirurgia in todosIds:
+        print(read("CIRURGIA", "STATUS", idCirurgia))
+        retornoStatus = read("CIRURGIA", "STATUS", idCirurgia)
+        match retornoStatus[0][0]:
+            case 1:
+                Agendadas += 1
+            case 2: 
+                Concluidas +=1
+            case 3: 
+                Canceladas +=1
+        
+    qtdStatus = []
+    status = []
+    c = []
+    
+    #Se os status forem diferente de zero, eles aparecerão na tela
+    if Agendadas != 0:
+        qtdStatus.append(Agendadas)
+        status.append('Agendadas')
+        c.append('#085CA6')
+    if Concluidas != 0:
+        qtdStatus.append(Concluidas)
+        status.append('Concluídas')
+        c.append('#03AD1D')
+    if Canceladas != 0:
+        qtdStatus.append(Canceladas)
+        status.append('Canceladas')
+        c.append('#CC8502')
+    
+    #O gráfico não será apresentado se TODOS os status forem iguais a zero
+    if Agendadas or Concluidas or Canceladas != 0:
+        # Estamos criando a representação, área de plotagem
+        figura=plt.Figure(figsize=(4, 3), dpi=200, layout='compressed')
+        ax=figura.add_subplot(111)
+
+        #Inserindo a figura na tela
+        canva=FigureCanvasTkAgg(figura,tela)
+        canva.get_tk_widget().grid(row=0, column=0, padx=5, pady=50)
+        # Criando o gráfico
+        ax.set_title("Status das cirurgias", y = 1, loc='center')
+
+
+        if len(qtdStatus) == 1:
+            wedges, texts, autotexts = ax.pie(qtdStatus, autopct=lambda v:f"{sum(qtdStatus)*v/100:.0f}",shadow=False, pctdistance=0, colors= c)
+        else:    
+            wedges, texts, autotexts = ax.pie(qtdStatus, autopct=lambda v:f"{sum(qtdStatus)*v/100:.0f}",shadow=False, pctdistance=0.5, colors= c)
+        ax.legend(wedges, status,
+                title="Status",
+                loc="center left",
+                bbox_to_anchor=(1, 0, 0.5, 1))
+        plt.setp(autotexts, size=13)
 
 def mostrar_senha():
     if show_password_var.get():

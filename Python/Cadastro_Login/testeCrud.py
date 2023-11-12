@@ -1,8 +1,8 @@
 import crud
-#
+
 #crud.createEspecializacao("Cérrebro")
 #crud.createSala(23)
-crud.createPerfilDeAcesso("1","a",1)
+#crud.createPerfilDeAcesso("1","a",1)
 #crud.createEnfermeiro("1980/05/02", "Ana", "@gmail.com")
 #crud.createEnfermeiro("1975/01/02", "Valentina", "val@gmail.com")
 #crud.createInstrumentador("1980/09/02", "Maike", "@gmail.com")

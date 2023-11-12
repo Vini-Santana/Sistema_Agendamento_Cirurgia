@@ -63,9 +63,9 @@ def createPaciente(nome, dtnascimento, endereco, numCarteira, email, fkRecepcion
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
-#STATUS: 1 - AGENDADA 2 - EM ANDAMENTO  3 - CANCELADA 4 - CONCLUÍDA    
+#STATUS: 1 - AGENDADA,  2 - CONCLUÍDA,  3 - CANCELADA
 def createCirurgia(dtInicio, dtFim, fkCirurgiao, fkRecepcionista, fkSala, fkTipo, fkPaciente, fkInstrumentador, fkAnestesista):
-    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,FKCIRURGIAO,FKRECEPCIONISTA,FKSALA,FKTIPO,FKPACIENTE,FKINSTRUMENTADOR,FKANESTESISTA,STATUS) VALUES ("{dtInicio}","{dtFim}",{fkCirurgiao},{fkRecepcionista},{fkSala},{fkTipo},{fkPaciente},{fkInstrumentador},{fkAnestesista}, 1)'
+    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,FKCIRURGIAO,FKRECEPCIONISTA,FKSALA,FKTIPO,FKPACIENTE,FKINSTRUMENTADOR,FKANESTESISTA,STATUS) VALUES ("{dtInicio}","{dtFim}",{fkCirurgiao},{fkRecepcionista},{fkSala},{fkTipo},{fkPaciente},{fkInstrumentador},{fkAnestesista}, 3)'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -100,6 +100,15 @@ def delete(nomeDaTabela, id):
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
+def deletaCirurgia(idCururgia):
+    #delete("CIRURGIA_ENFERMEIRO", )
+    comando = f'DELETE FROM CIRURGIA_ENFERMEIRO WHERE FKCIRURGIA = {idCururgia}'
+    conexao.cursor.execute(comando)
+    conexao.conexaov.commit()
+    
+    comando = f'DELETE FROM CIRURGIA WHERE IDCIRURGIA = {idCururgia}'
+    conexao.cursor.execute(comando)
+    conexao.conexaov.commit()
 #UPDATE#
 
 def update(nomeDaTabela, nomeDaColuna, valor, IdDoRegistro):
@@ -114,6 +123,12 @@ def read(nomeDaTabela, atributo, id):
     conexao.cursor.execute(consulta)
     resultadoFim = conexao.cursor.fetchall()
     return resultadoFim
+    
+def obter_IDs_TodasCirurgias():
+    comando = "SELECT * FROM CIRURGIA"
+    conexao.cursor.execute(comando)
+    tipos_de_cirurgias = [row[0] for row in conexao.cursor.fetchall()]
+    return tipos_de_cirurgias
     
 def obter_tipos_de_cirurgias():
     comando = "SELECT TIPOCIRURGIA FROM TIPO_CIRURGIA"
