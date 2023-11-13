@@ -1,5 +1,5 @@
 import conexao
-##EXEMPLOS DE INSERÇÃO
+from datetime import datetime
 
 def createTesteData(data, data2):
     comando = f'INSERT INTO teste (dtInicio, dtFim) VALUES (str_to_date("{data}", "%Y-%m-%d %k:%i:%s"), str_to_date("{data2}", "%Y-%m-%d %k:%i:%s"))'
@@ -63,9 +63,14 @@ def createPaciente(nome, dtnascimento, endereco, numCarteira, email, fkRecepcion
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
-#STATUS: 1 - AGENDADA,  2 - CONCLUÍDA,  3 - CANCELADA
-def createCirurgia(dtInicio, dtFim, fkCirurgiao, fkRecepcionista, fkSala, fkTipo, fkPaciente, fkInstrumentador, fkAnestesista):
-    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,FKCIRURGIAO,FKRECEPCIONISTA,FKSALA,FKTIPO,FKPACIENTE,FKINSTRUMENTADOR,FKANESTESISTA,STATUS) VALUES ("{dtInicio}","{dtFim}",{fkCirurgiao},{fkRecepcionista},{fkSala},{fkTipo},{fkPaciente},{fkInstrumentador},{fkAnestesista}, 3)'
+#STATUS: 1 - AGENDADA 2 - EM ANDAMENTO  3 - CANCELADA 4 - CONCLUÍDA    
+def createCirurgia(dtInicio, dtFim, status, nome_paciente, cpf_paciente, data_nasc, hora, fkCirurgiao, fkSala, fkTipo, fkInstrumentador, fkAnestesista):
+
+    dtInicio = datetime.strptime(dtInicio, '%d/%m/%Y').strftime('%Y-%m-%d')
+    dtFim = datetime.strptime(dtFim, '%d/%m/%Y').strftime('%Y-%m-%d')
+    data_nasc = datetime.strptime(data_nasc, '%d/%m/%Y').strftime('%Y-%m-%d')
+
+    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,STATUS,NOME_PACIENTE,CPF_PACIENTE,DATA_NASCIMENTO, HORA, FKCIRURGIAO,FKSALA,FKTIPO,FKINSTRUMENTADOR,FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{nome_paciente}","{cpf_paciente}","{data_nasc}","{hora}","{fkCirurgiao}","{fkSala}","{fkTipo}","{fkInstrumentador}","{fkAnestesista}")'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -100,15 +105,6 @@ def delete(nomeDaTabela, id):
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
-def deletaCirurgia(idCururgia):
-    #delete("CIRURGIA_ENFERMEIRO", )
-    comando = f'DELETE FROM CIRURGIA_ENFERMEIRO WHERE FKCIRURGIA = {idCururgia}'
-    conexao.cursor.execute(comando)
-    conexao.conexaov.commit()
-    
-    comando = f'DELETE FROM CIRURGIA WHERE IDCIRURGIA = {idCururgia}'
-    conexao.cursor.execute(comando)
-    conexao.conexaov.commit()
 #UPDATE#
 
 def update(nomeDaTabela, nomeDaColuna, valor, IdDoRegistro):
@@ -123,7 +119,7 @@ def read(nomeDaTabela, atributo, id):
     conexao.cursor.execute(consulta)
     resultadoFim = conexao.cursor.fetchall()
     return resultadoFim
-    
+
 def obter_IDs_TodasCirurgias():
     comando = "SELECT * FROM CIRURGIA"
     conexao.cursor.execute(comando)
@@ -177,3 +173,9 @@ def obter_tempo_medio(tipo_cirurgia):
         return tempo_medio
     else:
         return None
+    
+def obter_cirurgias_do_bd():
+    comando = "SELECT FKTIPO, FKCIRURGIAO, DTINICIO, HORA, STATUS FROM CIRURGIA"
+    conexao.cursor.execute(comando)
+    cirurgias = conexao.cursor.fetchall()
+    return cirurgias
