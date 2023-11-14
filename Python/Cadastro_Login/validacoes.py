@@ -26,11 +26,49 @@ def validaDtinicioMenorDtfim(data_inicio, data_fim):
 
     except ValueError as e:
         return str(e)
+def validaSalaDisponivel(dtInicio, horaInicio, dtFim, horaFim):
+    dtInicio =  datetime.strptime(dtInicio + " " + horaInicio, '%d/%m/%Y %H:%M:%S')
+    dtFim = datetime.strptime(dtFim + " " + horaFim, '%d/%m/%Y %H:%M:%S')
+    consulta = f'SELECT NUMEROSALA FROM SALA WHERE IDSALA NOT IN (SELECT FKSALA FROM CIRURGIA WHERE ("{dtInicio}" > concat(dtinicio, ' ' horainicio) AND "{dtInicio}" < concat(dtFim, ' ' horaFim)) OR ("{dtFim}" > concat(dtinicio, ' ' horainicio) AND "{dtFim}" < concat(dtFim, ' ' horaFim)) OR ("{dtInicio}" < concat(dtinicio, ' ' horainicio) AND "{dtFim}" > concat(dtFim, ' ' horaFim)))'
+    conexao.cursor.execute(consulta)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
 
-    
+def validaNomeCirurgiaoDisponivel(dtInicio, horaInicio, dtFim, horaFim):
+    dtInicio =  datetime.strptime(dtInicio + " " + horaInicio, '%d/%m/%Y %H:%M:%S')
+    dtFim = datetime.strptime(dtFim + " " + horaFim, '%d/%m/%Y %H:%M:%S')
+    consulta = f'SELECT NOME FROM CIRURGIAO WHERE IDCIRURGIAO NOT IN (SELECT FKCIRURGIAO FROM CIRURGIA WHERE ("{dtInicio}" > concat(dtinicio, ' ' horainicio) AND "{dtInicio}" < concat(dtFim, ' ' horaFim)) OR ("{dtFim}" > concat(dtinicio, ' ' horainicio) AND "{dtFim}" < concat(dtFim, ' ' horaFim)) OR ("{dtInicio}" < concat(dtinicio, ' ' horainicio) AND "{dtFim}" > concat(dtFim, ' ' horaFim)))'
+    conexao.cursor.execute(consulta)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
+
+def validaNomeInstrumentadorDisponivel(dtInicio, horaInicio, dtFim, horaFim):
+    dtInicio =  datetime.strptime(dtInicio + " " + horaInicio, '%d/%m/%Y %H:%M:%S')
+    dtFim = datetime.strptime(dtFim + " " + horaFim, '%d/%m/%Y %H:%M:%S')
+    consulta = f'SELECT NOME FROM INSTRUMENTADOR WHERE IDINSTRUMENTADOR NOT IN (SELECT FKINSTRUMENTADOR FROM CIRURGIA WHERE ("{dtInicio}" > concat(dtinicio, ' ' horainicio) AND "{dtInicio}" < concat(dtFim, ' ' horaFim)) OR ("{dtFim}" > concat(dtinicio, ' ' horainicio) AND "{dtFim}" < concat(dtFim, ' ' horaFim)) OR ("{dtInicio}" < concat(dtinicio, ' ' horainicio) AND "{dtFim}" > concat(dtFim, ' ' horaFim)))'
+    conexao.cursor.execute(consulta)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
+
+def validaNomeAnestesistaDisponivel(dtInicio, horaInicio, dtFim, horaFim):
+    dtInicio =  datetime.strptime(dtInicio + " " + horaInicio, '%d/%m/%Y %H:%M:%S')
+    dtFim = datetime.strptime(dtFim + " " + horaFim, '%d/%m/%Y %H:%M:%S')
+    consulta = f'SELECT NOME FROM ANESTESISTA WHERE IDANESTESISTA NOT IN (SELECT FKANESTESISTA FROM CIRURGIA WHERE ("{dtInicio}" > concat(dtinicio, ' ' horainicio) AND "{dtInicio}" < concat(dtFim, ' ' horaFim)) OR ("{dtFim}" > concat(dtinicio, ' ' horainicio) AND "{dtFim}" < concat(dtFim, ' ' horaFim)) OR ("{dtInicio}" < concat(dtinicio, ' ' horainicio) AND "{dtFim}" > concat(dtFim, ' ' horaFim)))'
+    conexao.cursor.execute(consulta)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
+
+def validaNomeEnfermeiroDisponivel(dtInicio, horaInicio, dtFim, horaFim):
+    dtInicio =  datetime.strptime(dtInicio + " " + horaInicio, '%d/%m/%Y %H:%M:%S')
+    dtFim = datetime.strptime(dtFim + " " + horaFim, '%d/%m/%Y %H:%M:%S')
+    consulta = f'SELECT NOME FROM ENFERMEIRO WHERE IDENFERMEIRO NOT IN (SELECT FKENFERMEIRO FROM CIRURGIA WHERE ("{dtInicio}" > concat(dtinicio, ' ' horainicio) AND "{dtInicio}" < concat(dtFim, ' ' horaFim)) OR ("{dtFim}" > concat(dtinicio, ' ' horainicio) AND "{dtFim}" < concat(dtFim, ' ' horaFim)) OR ("{dtInicio}" < concat(dtinicio, ' ' horainicio) AND "{dtFim}" > concat(dtFim, ' ' horaFim)))'
+    conexao.cursor.execute(consulta)
+    cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
+    return cirurgiaos
+
 #VALIDA SE TEM SALA, CIRURGIÃO, ANESTESISTA, INSTRUMENTADOR E ENFERIMEIRO DISPONÍVEIS PARA CIRURGIA
 def validaProfissionaisESalaDisponiveis(dtInicio, dtFim):
-    consulta = f'SELECT IDSALA FROM SALA WHERE IDSALA NOT IN (SELECT FKSALA FROM CIRURGIA WHERE ("{dtInicio}" > DTINICIO AND "{dtInicio}" < DTFIM) OR ("{dtFim}" > DTINICIO AND "{dtFim}" < DTFIM) OR ("{dtInicio}" < DTINICIO AND "{dtFim}" > DTFIM))'
+    consulta = f'SELECT IDSALA FROM SALA WHERE IDSALA NOT IN (SELECT FKSALA FROM CIRURGIA WHERE (("{dtInicio}" > DTINICIO AND "{dtInicio}" < DTFIM) OR ("{dtFim}" > DTINICIO AND "{dtFim}" < DTFIM) OR ("{dtInicio}" < DTINICIO AND "{dtFim}" > DTFIM))'
     conexao.cursor.execute(consulta)
     resultadoFim = conexao.cursor.fetchall()
     msg =[]
@@ -65,3 +103,5 @@ def validaProfissionaisESalaDisponiveis(dtInicio, dtFim):
         raise ValueError(msg)
     else:
         return True
+    
+print(validaNomeInstrumentadorDisponivel("25/04/2023", "7:05:27", "25/04/2023", "16:05:12"))
