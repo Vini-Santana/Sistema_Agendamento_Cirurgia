@@ -53,13 +53,10 @@ def createEspecializacao_Cirurgiao(fkCirurgiao, fkEspecializacao):
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
     
-def createRecepcionista(dtnascimento, nome, email, fkPrfil):
-    comando = f'INSERT INTO RECEPCIONISTA(DTNASCIMENTO,NOME,EMAIL,FKPERFILACESSO) VALUES ("{dtnascimento}","{nome}","{email}", {fkPrfil})'
-    conexao.cursor.execute(comando)
-    conexao.conexaov.commit()
-    
 def createPaciente(nome, dtnascimento, CPF):
-    comando = f'INSERT INTO PACIENTE(NOME,DTNASCIMENTO,CPF) VALUES ("{nome}","{dtnascimento}","{CPF}")'
+    data_nascimento_formatada = datetime.strptime(dtnascimento, '%d/%m/%Y').strftime('%Y-%m-%d')
+
+    comando = f'INSERT INTO PACIENTE(NOME,DTNASCIMENTO,CPF) VALUES ("{nome}","{data_nascimento_formatada}","{CPF}")'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -76,25 +73,6 @@ def createCirurgia(dtInicio, dtFim, status, nome_paciente, cpf_paciente, data_na
 
 def createCirurgia_Enfermeiro(fkCirurgia, fkEnfermeiro):
     comando = f'INSERT INTO CIRURGIA_ENFERMEIRO(FKCIRURGIA,FKENFERMEIRO) VALUES ({fkCirurgia},{fkEnfermeiro})'
-    conexao.cursor.execute(comando)
-    conexao.conexaov.commit()
-def createTelefone(ddd, telefone, nomeDaTabela, fkRegistro):
-    match nomeDaTabela:
-        case 1:
-            nomeDaTabela = 'FKENFERMEIRO'
-        case 2:
-            nomeDaTabela = "FKCIRURGIAO"
-        case 3:
-            nomeDaTabela = 'FKPACIENTE'
-        case 4:
-            nomeDaTabela = "FKINSTRUMENTADOR"
-        case 5:
-            nomeDaTabela = "FKANESTESISTA"
-        case 6:
-            nomeDaTabela = "FKRECEPCIONISTA"
-        case _:
-            print("Erro")
-    comando = f'INSERT INTO TELEFONE(DDD,TELEFONE,{nomeDaTabela}) VALUES ({ddd},"{telefone}",{fkRegistro})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -179,3 +157,20 @@ def obter_cirurgias_do_bd():
     conexao.cursor.execute(comando)
     cirurgias = conexao.cursor.fetchall()
     return cirurgias
+
+def cliente_existente(cpf):
+    comando = f'SELECT COUNT(*) FROM PACIENTE WHERE CPF = "{cpf}"'
+    conexao.cursor.execute(comando)
+    resultado = conexao.cursor.fetchone()[0]
+
+    return resultado > 0
+
+def validar_data_nascimento(data_nasc):
+    try:
+        data_nascimento = datetime.strptime(data_nasc, '%d/%m/%Y')
+        data_minima = datetime.now().replace(year=datetime.now().year - 110)
+        data_maxima = datetime.now().replace(year=datetime.now().year - 18)
+
+        return data_minima <= data_nascimento <= data_maxima
+    except ValueError:
+        return False

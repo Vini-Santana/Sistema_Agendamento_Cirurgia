@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime, timedelta, time
-from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd
+from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd, createPaciente, validar_data_nascimento, cliente_existente
 from validacoes import validaUsuarioSenha_RetornaNivelAcesso
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -129,19 +129,31 @@ def tela_home():
             frame_paciente.pack_forget()
             tela_home()
 
+        def validar_paciente():
+            nome = entry_nome.get()
+            cpf = entry_cpf.get()
+            data_nasc = entry_data.get()
+
+            if not cliente_existente(cpf):
+                # Paciente não existe, cadastrar
+                createPaciente(nome, data_nasc, cpf)
+                messagebox.showinfo(title="Informação", message="Cadastrando Paciente")
+            
+            tela_administrador()
+
         frame_paciente = ctk.CTkFrame(tela, width=1000, height=600)
         frame_paciente.pack()
 
         label_visualizador = ctk.CTkLabel(frame_paciente, bg_color="#000000", width=985, height=585, text="", fg_color="#d9d9d9", corner_radius=12)
         label_visualizador.place(x=10, y=10)
 
-        label_nome = ctk.CTkLabel(frame_paciente, text="NOME DO PACIENTE", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+        label_nome = ctk.CTkLabel(frame_paciente, text="NOME DO PACIENTE *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
         label_nome.place(x=425, y=120)
 
         entry_nome = ctk.CTkEntry(frame_paciente, fg_color="#ffffff", text_color="#000000", width=300, height=30)
         entry_nome.place(x=350, y=150)
 
-        label_cpf = ctk.CTkLabel(frame_paciente, text="CPF DO PACIENTE", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+        label_cpf = ctk.CTkLabel(frame_paciente, text="CPF DO PACIENTE *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
         label_cpf.place(x=425, y=190)
 
         def formatar_cpf(event):
@@ -156,14 +168,14 @@ def tela_home():
             if len(cpf) == 9:
                 entry_cpf.insert(ctk.END, '-')
 
-            if len(cpf) == 13:
+            if len(cpf) == 12:
                 entry_cpf.delete(13, ctk.END)
 
         entry_cpf = ctk.CTkEntry(frame_paciente, fg_color="#ffffff", text_color="#000000", width=300, height=30)
         entry_cpf.place(x=350, y=220)
         entry_cpf.bind("<KeyRelease>", formatar_cpf)
 
-        label_data = ctk.CTkLabel(frame_paciente, text="DATA DE NASCIMENTO DO PACIENTE", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+        label_data = ctk.CTkLabel(frame_paciente, text="DATA DE NASCIMENTO DO PACIENTE *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
         label_data.place(x=350, y=260)
 
         def formatar_data(event):
@@ -175,18 +187,15 @@ def tela_home():
             if len(s) == 5 and s.count('/') == 1:
                     entry_data.insert(ctk.END, '/')
 
+            if not validar_data_nascimento(s):
+                entry_data.delete(10, ctk.END)
+
         entry_data = ctk.CTkEntry(frame_paciente, fg_color="#ffffff", text_color="#000000", width=300, height=30)
         entry_data.place(x=350, y=290)
         entry_data.bind("<KeyRelease>", formatar_data)
 
         botao_voltar_home = ctk.CTkButton(frame_paciente, text="Home", command=voltar_para_tela_anterior, fg_color="#FFD700", text_color="#000000", corner_radius=12, bg_color="#d9d9d9", hover_color="#F0E68C")
-        botao_voltar_home.place(x=200, y=460)
-
-        def validar_paciente():
-            if (not entry_nome.get() or not entry_cpf.get() or not entry_data.get()):
-                messagebox.showerror("Erro", "Por favor, preencha todos os campos obrigatórios.")
-            else:
-                tela_administrador()
+        botao_voltar_home.place(x=200, y=460)      
 
         botao_proximo = ctk.CTkButton(frame_paciente, text="Proximo", command=validar_paciente, fg_color="#00940A", text_color="#000000", corner_radius=12, bg_color="#d9d9d9")
         botao_proximo.place(x=600, y=460)
