@@ -64,8 +64,8 @@ def createPaciente(nome, dtnascimento, CPF):
 #STATUS: 1 - AGENDADA, 2 - CONCLUÍDA 3 - CANCELADA    
 def createCirurgia(dtInicio, dtFim, status, horaInicio, horaFim, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista):
 
-    dtInicio = datetime.strptime(dtInicio, '%d/%m/%Y').strftime('%Y-%m-%d')
-    dtFim = datetime.strptime(dtFim, '%d/%m/%Y').strftime('%Y-%m-%d')
+    #dtInicio = datetime.strptime(dtInicio, '%d/%m/%Y').strftime('%Y-%m-%d')
+    #dtFim = datetime.strptime(dtFim, '%d/%m/%Y').strftime('%Y-%m-%d')
 
     comando = f'INSERT INTO CIRURGIA(DTINICIO, DTFIM, STATUS, HORAINICIO, HORAFIM, FKCIRURGIAO, FKSALA, FKTIPO, FKPACIENTE, FKINSTRUMENTADOR, FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{horaInicio}","{horaFim}","{fkcirurgiao}","{fkSala}","{fktipo}","{fkpaciente}","{fkinstrumentador}","{fkanestesista}")'
     conexao.cursor.execute(comando)
