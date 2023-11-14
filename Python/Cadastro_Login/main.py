@@ -134,10 +134,13 @@ def tela_home():
             cpf = entry_cpf.get()
             data_nasc = entry_data.get()
 
-            if not cliente_existente(cpf):
-                # Paciente não existe, cadastrar
-                createPaciente(nome, data_nasc, cpf)
-                messagebox.showinfo(title="Informação", message="Cadastrando Paciente")
+            if not nome or not cpf or not data_nasc:
+                messagebox.showerror(title="Erro", message="Preencha todos os campos obrigatorios")
+            else:
+                if not cliente_existente(cpf):
+                    # Paciente não existe, cadastrar
+                    createPaciente(nome, data_nasc, cpf)
+                    messagebox.showinfo(title="Informação", message="Cadastrando Paciente")
             
             tela_administrador()
 
@@ -537,7 +540,7 @@ def tela_home():
                 if (not tipo_selecionado.get() or not entry_data_inicio.get() or not entry_data_fim.get() or 
                     not entry_horario_inicio.get() or not entry_medio_cirurgia.get() or not entry_hora_fim.get()):
                     messagebox.showerror("Erro", "Por favor, preencha todos os campos obrigatórios.")
-                elif sala_selecionada.get() == 0:
+                elif sala_selecionada.get() == "":
                     messagebox.showerror("Erro na Sala", "Por favor, escolha uma sala no menu suspenso.")
                 else:
                     tela_agenda()
@@ -582,8 +585,8 @@ def tela_home():
 
             tela_home()
 
-        botao_nova_agenda = ctk.CTkButton(frame_menu_lateral, width=130, height=50, fg_color="#252525", text="Home", font=('Arial',16,'bold'), command=voltar_home)
-        botao_nova_agenda.place(x=10, y=170)
+        botao_home = ctk.CTkButton(frame_menu_lateral, width=130, height=50, fg_color="#252525", text="Home", font=('Arial',16,'bold'), command=voltar_home)
+        botao_home.place(x=10, y=170)
 
         botao_nova_agenda = ctk.CTkButton(frame_menu_lateral, width=130, height=50, fg_color="#252525", text="Nova Agenda", font=('Arial',16,'bold'), command=tela_paciente)
         botao_nova_agenda.place(x=10, y=230)
@@ -604,8 +607,11 @@ def tela_home():
 
                 texto_label = f"TIPO - {cirurgia[0]} STATUS: {status_descricao}\n Cirurgião - {cirurgia[2]}\n DATA - {cirurgia[2]}, HORARIO - {cirurgia[3]}"
 
-                label_cirurgia = ctk.CTkLabel(label_visu_agendas, text=texto_label, width=810, height=100, fg_color="#8aceff", text_color="#000000")
+                label_cirurgia = ctk.CTkLabel(label_visu_agendas, text=texto_label, width=810, height=100, fg_color="#8aceff", text_color="#000000", font=('Arial',16,'bold'))
                 label_cirurgia.place(x=20, y=y_pos)
+
+                botao_visualizar = ctk.CTkButton(label_cirurgia, text="Visualizar")
+                botao_visualizar.place(x=630, y=60)
 
                 y_pos += 120
 
