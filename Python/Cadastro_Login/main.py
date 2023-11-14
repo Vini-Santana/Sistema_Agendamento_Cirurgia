@@ -138,12 +138,11 @@ def tela_home():
                 messagebox.showerror(title="Erro", message="Preencha todos os campos obrigatorios")
             else:
                 if not cliente_existente(cpf):
-                    # Paciente não existe, cadastrar
                     createPaciente(nome, data_nasc, cpf)
                     messagebox.showinfo(title="Informação", message="Cadastrando Paciente")
                     tela_administrador()
                 else:
-                    pass
+                    tela_administrador()
             
            
 
