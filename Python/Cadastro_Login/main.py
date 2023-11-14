@@ -141,8 +141,11 @@ def tela_home():
                     # Paciente não existe, cadastrar
                     createPaciente(nome, data_nasc, cpf)
                     messagebox.showinfo(title="Informação", message="Cadastrando Paciente")
+                    tela_administrador()
+                else:
+                    pass
             
-            tela_administrador()
+           
 
         frame_paciente = ctk.CTkFrame(tela, width=1000, height=600)
         frame_paciente.pack()
