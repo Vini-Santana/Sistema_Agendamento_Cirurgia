@@ -1,16 +1,21 @@
-import datetime
+# Feito por Eduardo, Caio, Lucas, Gabriel, Nicolas e Olivia
+# Código baseado na documentação do Projeto Integrador de Redes de Computadores modificado
+
+# Feito por Eduardo, Caio, Lucas, Gabriel, Nicolas e Olivia
+# Código baseado na documentação do Projeto Integrador de Redes de Computadores modificado
+
 import requests
 import logging
-import crud 
+
 class Log:
     def __init__(self):
-        self.time = '' # colocar o nome da equipe fornecida pelo professor - Ex: '4SI_GBD_0X'
-        self.senha = ''  # colocar a senha fornecida pelo professor
-        self.banco_de_dados = '' # colocar o nome do banco de dados
-        self.tabela = '' # colocar uma tabela do banco de dados (definir no método "submit")
-        self.chave_primaria = 0 # (definir no método "submit")
-        self.crud = '' # CREATE, UPDATE ou DELETE (definir no método "submit")
-        self.usuario = '' # Colocar o nome do usuário (definir no método "submit")
+        self.time = '4SI_GBD_04' # colocar o nome da equipe fornecida pelo professor - Ex: '4SI_GBD_0X'
+        self.senha = 'ChYFeao3zW'  # colocar a senha fornecida pelo professor
+        self.banco_de_dados = 'cirurgiaDB' # colocar o nome do banco de dados
+        self.tabela = 'cirurgia' # colocar uma tabela do banco de dados (definir no método "submit")
+        self.chave_primaria = 25 # (definir no método "submit")
+        self.crud = 'CREATE' # CREATE, UPDATE ou DELETE (definir no método "submit")
+        self.usuario = 'ViniciusV' # Colocar o nome do usuário (definir no método "submit")
 
     def _insertCmd(self):
         response_statement = 'insert/{your_team, your_password, your_dbname, your_table, your_table_pk, crud, your_username}'
@@ -50,16 +55,3 @@ class Log:
         self.usuario = user
         
         self._postRequest()
-crud.update("cirurgia", "status", 2, 2)
-##METODO QUE CONVERTE DATA E HORA SEPARADOS PARA DATETIME
-#data = "02/05/2023"
-#hora = "12:05:12"
-#def horario(data, hora):
-#    return data + " "+ hora
-#
-#print(horario(data, hora))
-#print(datetime.datetime.strptime(horario(data,hora), '%d/%m/%Y %H:%I:%S'))
-#print(datetime.datetime.strftime(datetime.datetime.strptime(horario(data,hora), '%d/%m/%Y %H:%I:%S'),'%d/%m/%Y %H:%I:%S'))
-#crud.createCirurgia(datetime.datetime.strptime(horario(data,hora), '%d/%m/%Y %H:%I:%S'), "2023-05-02 10:00:12",1, 1, 1, 1, 1,1 ,1)
-
-#Log.Log.submit(Log, "cirurgia", 25, "CREATE", "ViniV")
