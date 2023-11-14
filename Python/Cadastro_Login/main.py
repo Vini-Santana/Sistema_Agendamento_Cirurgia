@@ -213,7 +213,7 @@ def tela_home():
             label_cirurgia = ctk.CTkLabel(frame_adm_agenda, bg_color="#000000", width=985, height=585, text="", fg_color="#d9d9d9", corner_radius=12)
             label_cirurgia.place(x=10, y=10)
 
-            label_tipo_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="TIPO DE CIRURGIA", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+            label_tipo_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="TIPO DE CIRURGIA *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
             label_tipo_cirurgia.place(x=425, y=120)
 
             tipos_de_cirurgia = obter_tipos_de_cirurgias()
@@ -222,10 +222,10 @@ def tela_home():
             tipo_cirurgia = ctk.CTkComboBox(frame_adm_agenda, variable=tipo_selecionado, values=tipos_de_cirurgia, 
                                                 fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000",
                                                 dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
-            tipo_cirurgia.place(x=350, y=160)
+            tipo_cirurgia.place(x=350, y=150)
 
-            label_data_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="DATA INICIAL", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
-            label_data_cirurgia.place(x=360, y=210)
+            label_data_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="DATA INICIAL *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+            label_data_cirurgia.place(x=360, y=200)
 
 
             def formatar_data(event):
@@ -238,17 +238,17 @@ def tela_home():
                         entry_data_inicio.insert(ctk.END, '/')
 
             entry_data_inicio = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000")
-            entry_data_inicio.place(x=350, y=235)
+            entry_data_inicio.place(x=350, y=225)
             entry_data_inicio.bind("<KeyRelease>", formatar_data)
 
             label_data_fim_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="DATA FINAL", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
-            label_data_fim_cirurgia.place(x=360, y=330)
+            label_data_fim_cirurgia.place(x=360, y=320)
 
             entry_data_fim = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000", state="readonly")
-            entry_data_fim.place(x=350, y=360)
+            entry_data_fim.place(x=350, y=350)
 
-            label_horario_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORARIO INICIAL", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
-            label_horario_cirurgia.place(x=510, y=210)
+            label_horario_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORARIO INICIAL *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+            label_horario_cirurgia.place(x=510, y=200)
 
             def formatar_horario(event):
                 entry_data_inicio = event.widget
@@ -261,28 +261,33 @@ def tela_home():
                     entry_data_inicio.delete(5, ctk.END)
 
             entry_horario_inicio = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000")
-            entry_horario_inicio.place(x=510, y=235)
+            entry_horario_inicio.place(x=510, y=225)
             entry_horario_inicio.bind("<KeyRelease>", formatar_horario)
 
             label_medio_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="TEMPO MEDIO", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
-            label_medio_cirurgia.place(x=355, y=270)
+            label_medio_cirurgia.place(x=355, y=260)
 
             entry_medio_cirurgia = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000", state="readonly")
-            entry_medio_cirurgia.place(x=350, y=295)
+            entry_medio_cirurgia.place(x=350, y=285)
 
             label_hora_final_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORA FINAL PREVISTA", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
-            label_hora_final_cirurgia.place(x=500, y=330)
+            label_hora_final_cirurgia.place(x=500, y=320)
 
             entry_hora_fim = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000", state="readonly")
-            entry_hora_fim.place(x=510, y=360)
+            entry_hora_fim.place(x=510, y=350)
+
+            label_sala = ctk.CTkLabel(frame_adm_agenda, text="SALA *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+            label_sala.place(x=465, y=390)
 
             tipos_salas = obter_salas()
 
-            sala_selecionada = ctk.IntVar()
+            tipos_salas.insert(0, "")
+
+            sala_selecionada = ctk.StringVar()  # Use StringVar para armazenar uma string
             sala_cirurgia = ctk.CTkComboBox(frame_adm_agenda, variable=sala_selecionada, values=tipos_salas, 
-                                                fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000",
-                                                dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
-            sala_cirurgia.place(x=350, y=400)
+                                            fg_color="#ffffff", dropdown_fg_color="#ffffff", text_color="#000000",
+                                            dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
+            sala_cirurgia.place(x=350, y=415)
 
             def validar_data_e_hora(data_str, horario_str):
                 
