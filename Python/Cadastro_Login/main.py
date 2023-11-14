@@ -1,10 +1,11 @@
 import customtkinter as ctk
 import datetime
+import conexao
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime, timedelta, time
-from crud import obter_id, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd, createPaciente, validar_data_nascimento, cliente_existente, obter_id_tipo, obter_id_sala
-from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio
+from crud import obter_id, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd, createPaciente, validar_data_nascimento, cliente_existente, obter_id_tipo, obter_id_sala, cancelar, concluir
+from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio, obter_tipo_por_id, obter_nome_cirurgiao_por_id
 from validacoes import validaUsuarioSenha_RetornaNivelAcesso
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -41,14 +42,15 @@ def tela_home():
         todosIds = obter_IDs_TodasCirurgias()
         for idCirurgia in todosIds:
             retornoStatus = read("CIRURGIA", "STATUS", idCirurgia)
-            match retornoStatus[0][0]:
-                case 1:
-                    Agendadas += 1
-                case 2: 
-                    Concluidas +=1
-                case 3: 
-                    Canceladas +=1
-            
+            if retornoStatus is not None:
+                match retornoStatus[0][0]:
+                    case 1:
+                        Agendadas += 1
+                    case 2: 
+                        Concluidas += 1
+                    case 3: 
+                        Canceladas += 1
+
         qtdStatus = []
         status = []
         c = []
@@ -125,6 +127,7 @@ def tela_home():
     label_img_home.place(x=10)
 
     def tela_paciente():
+        print("vamo que vamo")
         def voltar_para_tela_anterior():
             frame_paciente.pack_forget()
             tela_home()
@@ -515,6 +518,7 @@ def tela_home():
                         dtFim = entry_data_fim.get()
                         status = 1
                         hora = entry_horario_inicio.get()
+                        horafim = entry_hora_fim.get()
                         fkcirurgiao = obter_id("CIRURGIAO", "IDCIRURGIAO", cirurgiao_selecionado.get())
                         fkSala = obter_id_sala("SALA", "IDSALA", sala_selecionada.get())
                         fktipo = obter_id_tipo("TIPO_CIRURGIA", "IDTIPO", tipo_selecionado.get())
@@ -525,7 +529,7 @@ def tela_home():
                         if None in [fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista]:
                             messagebox.showerror("Erro", "Erro ao obter IDs dos relacionamentos.")
                         else:
-                            createCirurgia(dtInicio, dtFim, status, hora, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista)
+                            createCirurgia(dtInicio, dtFim, status, hora, horafim, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista)
                             messagebox.showinfo("Conclusão", "Cirurgia cadastrada com sucesso.")
                             tela_home()
                     
@@ -593,11 +597,18 @@ def tela_home():
         botao_nova_agenda = ctk.CTkButton(frame_menu_lateral, width=130, height=50, fg_color="#252525", text="Nova Agenda", font=('Arial',16,'bold'), command=tela_paciente)
         botao_nova_agenda.place(x=10, y=230)
 
+        def formatar_data(data):
+            return data.strftime('%d/%m/%Y')
+
         def exibir_cirurgias():
             cirurgias = obter_cirurgias_do_bd()
 
             y_pos = 120
             for cirurgia in cirurgias:
+                tipo_cirurgia = obter_tipo_por_id(cirurgia[0])
+                nome_cirurgiao = obter_nome_cirurgiao_por_id(cirurgia[1])
+                data_formatada = formatar_data(cirurgia[2])
+
                 if cirurgia[4] == 1:
                     status_descricao = "Agendado"
                 elif cirurgia[4] == 2:
@@ -607,13 +618,16 @@ def tela_home():
                 else:
                     status_descricao = "Desconhecido"
 
-                texto_label = f"TIPO - {cirurgia[0]} STATUS: {status_descricao}\n Cirurgião - {cirurgia[2]}\n DATA - {cirurgia[2]}, HORARIO - {cirurgia[3]}"
+                texto_label = f"TIPO - {tipo_cirurgia} STATUS: {status_descricao}\n Cirurgião - {nome_cirurgiao}\n DATA - {data_formatada}, HORARIO - {cirurgia[3]}"
 
                 label_cirurgia = ctk.CTkLabel(label_visu_agendas, text=texto_label, width=810, height=100, fg_color="#8aceff", text_color="#000000", font=('Arial',16,'bold'))
                 label_cirurgia.place(x=20, y=y_pos)
 
-                botao_visualizar = ctk.CTkButton(label_cirurgia, text="Visualizar")
-                botao_visualizar.place(x=630, y=60)
+                botao_concluir = ctk.CTkButton(label_cirurgia, text="Concluir", command=lambda idCirurgia=cirurgia[5]: confirmar_concluir(idCirurgia), fg_color="#2E8B57",text_color="#ffffff", width=80, hover_color="#00FF00")
+                botao_concluir.place(x=630, y=60)
+
+                botao_cancelar = ctk.CTkButton(label_cirurgia, text="Cancelar", command=lambda idCirurgia=cirurgia[5]: confirmar_cancelar(idCirurgia), fg_color="#F00000", text_color="#000000", corner_radius=12, bg_color="#d9d9d9", hover_color="#FF6347")
+                botao_cancelar.place(x=50, y=60)
 
                 y_pos += 120
 
@@ -625,6 +639,16 @@ def tela_home():
 
         botao_atualizar = ctk.CTkButton(frame_menu_lateral, text="Atualizar", width=130, height=50, fg_color="#252525", font=('Arial',16,'bold'), command=exibir_cirurgias)
         botao_atualizar.place(x=10, y=350)
+
+        def confirmar_cancelar(idCirurgia):
+            resposta = messagebox.askokcancel("Confirmação", "Tem certeza que deseja cancelar esta cirurgia?")
+            if resposta:
+                cancelar(idCirurgia)
+
+        def confirmar_concluir(idCirurgia):
+            resposta = messagebox.askokcancel("Confirmação", "Tem certeza que deseja concluir esta cirurgia?")
+            if resposta:
+                concluir(idCirurgia)
         
         exibir_cirurgias()
 

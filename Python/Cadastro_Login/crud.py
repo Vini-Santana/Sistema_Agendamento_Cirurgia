@@ -1,5 +1,6 @@
 import conexao
 from datetime import datetime
+from tkinter import messagebox
 
 def createTesteData(data, data2):
     comando = f'INSERT INTO teste (dtInicio, dtFim) VALUES (str_to_date("{data}", "%Y-%m-%d %k:%i:%s"), str_to_date("{data2}", "%Y-%m-%d %k:%i:%s"))'
@@ -61,12 +62,12 @@ def createPaciente(nome, dtnascimento, CPF):
     conexao.conexaov.commit()
 
 #STATUS: 1 - AGENDADA, 2 - CONCLUÍDA 3 - CANCELADA    
-def createCirurgia(dtInicio, dtFim, status, hora, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista):
+def createCirurgia(dtInicio, dtFim, status, horaInicio, horaFim, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista):
 
     dtInicio = datetime.strptime(dtInicio, '%d/%m/%Y').strftime('%Y-%m-%d')
     dtFim = datetime.strptime(dtFim, '%d/%m/%Y').strftime('%Y-%m-%d')
 
-    comando = f'INSERT INTO CIRURGIA(DTINICIO, DTFIM, STATUS, HORA, FKCIRURGIAO, FKSALA, FKTIPO, FKPACIENTE, FKINSTRUMENTADOR, FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{hora}","{fkcirurgiao}","{fkSala}","{fktipo}","{fkpaciente}","{fkinstrumentador}","{fkanestesista}")'
+    comando = f'INSERT INTO CIRURGIA(DTINICIO, DTFIM, STATUS, HORAINICIO, HORAFIM, FKCIRURGIAO, FKSALA, FKTIPO, FKPACIENTE, FKINSTRUMENTADOR, FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{horaInicio}","{horaFim}","{fkcirurgiao}","{fkSala}","{fktipo}","{fkpaciente}","{fkinstrumentador}","{fkanestesista}")'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -88,6 +89,24 @@ def update(nomeDaTabela, nomeDaColuna, valor, IdDoRegistro):
     comando = f'UPDATE {nomeDaTabela} SET {nomeDaColuna} = "{valor}" WHERE ID{nomeDaTabela} = {IdDoRegistro}'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
+
+def cancelar(idCirurgia):
+    try:
+       update_query = f"UPDATE CIRURGIA SET STATUS = 3 WHERE IDCIRURGIA = {idCirurgia}"
+       conexao.cursor.execute(update_query)
+       conexao.conexaov.commit()
+       messagebox.showinfo(title="Info", message="Clique no botão atualizar")
+    except Exception as e:
+        messagebox.showerror(title="Erro", message=f"Erro ao cancelar a cirurgia {idCirurgia}: {str(e)}")
+
+def concluir(idCirurgia):
+    try:
+       update_query = f"UPDATE CIRURGIA SET STATUS = 2 WHERE IDCIRURGIA = {idCirurgia}"
+       conexao.cursor.execute(update_query)
+       conexao.conexaov.commit()
+       messagebox.showinfo(title="Info", message="Clique no botão atualizar")
+    except Exception as e:
+        messagebox.showerror(title="Erro", message=f"Erro ao concluir a cirurgia {idCirurgia}: {str(e)}")
 
 
 #READ#
@@ -191,7 +210,7 @@ def obter_tempo_medio(tipo_cirurgia):
         return None
     
 def obter_cirurgias_do_bd():
-    comando = "SELECT FKTIPO, FKCIRURGIAO, DTINICIO, HORA, STATUS FROM CIRURGIA"
+    comando = "SELECT FKTIPO, FKCIRURGIAO, DTINICIO, HORA, STATUS, IDCIRURGIA FROM CIRURGIA"
     conexao.cursor.execute(comando)
     cirurgias = conexao.cursor.fetchall()
     return cirurgias
@@ -212,3 +231,15 @@ def validar_data_nascimento(data_nasc):
         return data_minima <= data_nascimento <= data_maxima
     except ValueError:
         return False
+    
+def obter_tipo_por_id(id):
+    comando = f'SELECT TIPOCIRURGIA FROM TIPO_CIRURGIA WHERE IDTIPO = %s'
+    conexao.cursor.execute(comando, (id,))
+    resultado = conexao.cursor.fetchone()
+    return resultado[0] if resultado else None
+
+def obter_nome_cirurgiao_por_id(id_cirurgiao):
+    consulta = 'SELECT NOME FROM CIRURGIAO WHERE IDCIRURGIAO = %s'
+    conexao.cursor.execute(consulta, (id_cirurgiao,))
+    resultado = conexao.cursor.fetchone()
+    return resultado[0] if resultado else None
