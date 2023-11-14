@@ -1,10 +1,10 @@
 import customtkinter as ctk
 import datetime
-import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime, timedelta, time
-from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd, createPaciente, validar_data_nascimento, cliente_existente
+from crud import obter_id, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd, createPaciente, validar_data_nascimento, cliente_existente, obter_id_tipo, obter_id_sala
+from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio
 from validacoes import validaUsuarioSenha_RetornaNivelAcesso
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -506,7 +506,24 @@ def tela_home():
                     botao_alterar.place(x=450, y=460)
 
                     def concluir():
-                        pass
+                        dtInicio = entry_data_inicio.get()
+                        dtFim = entry_data_fim.get()
+                        status = 1
+                        hora = entry_horario_inicio.get()
+                        fkcirurgiao = obter_id("CIRURGIAO", "IDCIRURGIAO", cirurgiao_selecionado.get())
+                        fkSala = obter_id_sala("SALA", "IDSALA", sala_selecionada.get())
+                        fktipo = obter_id_tipo("TIPO_CIRURGIA", "IDTIPO", tipo_selecionado.get())
+                        fkpaciente = obter_id("PACIENTE", "IDPACIENTE", entry_nome.get())
+                        fkinstrumentador = obter_id("INSTRUMENTADOR", "IDINSTRUMENTADOR", instrumentador_selecionado.get())
+                        fkanestesista = obter_id("ANESTESISTA", "IDANESTESISTA", anestesista_selecionado.get())
+
+                        if None in [fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista]:
+                            messagebox.showerror("Erro", "Erro ao obter IDs dos relacionamentos.")
+                        else:
+                            createCirurgia(dtInicio, dtFim, status, hora, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista)
+                            messagebox.showinfo("Conclusão", "Cirurgia cadastrada com sucesso.")
+                            tela_home()
+                    
 
                     botao_concluir = ctk.CTkButton(label_final, text="Concluir", fg_color="#2E8B57",text_color="#ffffff", width=80, hover_color="#00FF00", command=concluir)
                     botao_concluir.place(x=700, y=460)

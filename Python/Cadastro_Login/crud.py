@@ -61,13 +61,12 @@ def createPaciente(nome, dtnascimento, CPF):
     conexao.conexaov.commit()
 
 #STATUS: 1 - AGENDADA, 2 - CONCLUÍDA 3 - CANCELADA    
-def createCirurgia(dtInicio, dtFim, status, nome_paciente, cpf_paciente, data_nasc, hora, fkCirurgiao, fkSala, fkTipo, fkInstrumentador, fkAnestesista):
+def createCirurgia(dtInicio, dtFim, status, hora, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista):
 
     dtInicio = datetime.strptime(dtInicio, '%d/%m/%Y').strftime('%Y-%m-%d')
     dtFim = datetime.strptime(dtFim, '%d/%m/%Y').strftime('%Y-%m-%d')
-    data_nasc = datetime.strptime(data_nasc, '%d/%m/%Y').strftime('%Y-%m-%d')
 
-    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,STATUS, HORA, FKPACIENTE, FKCIRURGIAO,FKSALA,FKTIPO,FKINSTRUMENTADOR,FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{hora}","{fkCirurgiao}","{fkSala}","{fkTipo}","{fkInstrumentador}","{fkAnestesista}")'
+    comando = f'INSERT INTO CIRURGIA(DTINICIO, DTFIM, STATUS, HORA, FKCIRURGIAO, FKSALA, FKTIPO, FKPACIENTE, FKINSTRUMENTADOR, FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{hora}","{fkcirurgiao}","{fkSala}","{fktipo}","{fkpaciente}","{fkinstrumentador}","{fkanestesista}")'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -97,6 +96,45 @@ def read(nomeDaTabela, atributo, id):
     conexao.cursor.execute(consulta)
     resultadoFim = conexao.cursor.fetchall()
     return resultadoFim
+
+def obter_id(nome_da_tabela, id_nome_tabela, nome):
+    try:
+        consulta = f'SELECT {id_nome_tabela} FROM {nome_da_tabela} WHERE NOME = "{nome}"'
+        conexao.cursor.execute(consulta)
+        resultado = conexao.cursor.fetchone()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Erro ao executar a consulta: {e}")
+        return None
+    finally:
+        # Adicione essa linha para garantir que os resultados sejam lidos e processados
+        conexao.cursor.fetchall()
+
+def obter_id_tipo(nome_da_tabela, id_nome_tabela, nome):
+    try:
+        consulta = f'SELECT {id_nome_tabela} FROM {nome_da_tabela} WHERE TIPOCIRURGIA = "{nome}"'
+        conexao.cursor.execute(consulta)
+        resultado = conexao.cursor.fetchone()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Erro ao executar a consulta: {e}")
+        return None
+    finally:
+        # Adicione essa linha para garantir que os resultados sejam lidos e processados
+        conexao.cursor.fetchall()
+
+def obter_id_sala(nome_da_tabela, id_nome_tabela, nome):
+    try:
+        consulta = f'SELECT {id_nome_tabela} FROM {nome_da_tabela} WHERE NUMEROSALA = "{nome}"'
+        conexao.cursor.execute(consulta)
+        resultado = conexao.cursor.fetchone()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Erro ao executar a consulta: {e}")
+        return None
+    finally:
+        # Adicione essa linha para garantir que os resultados sejam lidos e processados
+        conexao.cursor.fetchall()
 
 def obter_IDs_TodasCirurgias():
     comando = "SELECT * FROM CIRURGIA"
