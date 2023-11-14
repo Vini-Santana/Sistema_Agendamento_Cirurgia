@@ -265,10 +265,10 @@ def tela_home():
             entry_horario_inicio.bind("<KeyRelease>", formatar_horario)
 
             label_medio_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="TEMPO MEDIO", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
-            label_medio_cirurgia.place(x=355, y=260)
+            label_medio_cirurgia.place(x=510, y=260)
 
             entry_medio_cirurgia = ctk.CTkEntry(frame_adm_agenda, fg_color="#ffffff", text_color="#000000", state="readonly")
-            entry_medio_cirurgia.place(x=350, y=285)
+            entry_medio_cirurgia.place(x=510, y=285)
 
             label_hora_final_cirurgia = ctk.CTkLabel(frame_adm_agenda, text="HORA FINAL PREVISTA", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
             label_hora_final_cirurgia.place(x=500, y=320)
@@ -366,7 +366,7 @@ def tela_home():
                     print("Erro: Tempo médio não encontrado.")
 
             botao_validar_hora = ctk.CTkButton(frame_adm_agenda, text="Confirmar data/hora", command=validarhora, corner_radius=12, bg_color="#d9d9d9")
-            botao_validar_hora.place(x=510, y=295)
+            botao_validar_hora.place(x=350, y=285)
 
             def tela_agenda():
                 def voltar_para_tela_anterior():
@@ -381,7 +381,7 @@ def tela_home():
                 label = ctk.CTkLabel(frame_agenda, bg_color="#000000", width=985, height=585, text="", fg_color="#d9d9d9", corner_radius=12)
                 label.place(x=10, y=10)
 
-                label_cirurgiao = ctk.CTkLabel(frame_agenda,text="CIRURGIÃO", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+                label_cirurgiao = ctk.CTkLabel(frame_agenda,text="CIRURGIÃO *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
                 label_cirurgiao.place(x=450, y=70)
 
                 cirurgiaos = obter_cirurgiao()
@@ -392,7 +392,7 @@ def tela_home():
                                                     dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
                 cirurgiao_box.place(x=350,y=100)
 
-                label_anestesista = ctk.CTkLabel(frame_agenda,text="ANESTESISTA", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+                label_anestesista = ctk.CTkLabel(frame_agenda,text="ANESTESISTA *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
                 label_anestesista.place(x=440, y=135)
 
                 anestesista = obter_anestesista()
@@ -403,7 +403,7 @@ def tela_home():
                                                     dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
                 anestesista_box.place(x=350,y=165)
 
-                label_instrumentador = ctk.CTkLabel(frame_agenda,text="INSTRUMENTADOR", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+                label_instrumentador = ctk.CTkLabel(frame_agenda,text="INSTRUMENTADOR *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
                 label_instrumentador.place(x=420, y=200)
                 instrumentador = obter_instrumentador()
 
@@ -413,7 +413,7 @@ def tela_home():
                                                     dropdown_text_color="#000000", dropdown_hover_color="#DCDCDC", width=300)
                 instrumentador_box.place(x=350,y=230)
 
-                label_enfermeiros = ctk.CTkLabel(frame_agenda,text="ENFERMEIROS", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
+                label_enfermeiros = ctk.CTkLabel(frame_agenda,text="ENFERMEIROS *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
                 label_enfermeiros.place(x=430, y=263)
 
                 frame_scrollable = ctk.CTkScrollableFrame(frame_agenda, width=300, fg_color="#DCDCDC", border_width=3, border_color="black")
@@ -435,13 +435,21 @@ def tela_home():
                 botao_obter_selecionados = ctk.CTkButton(frame_agenda, text="Adicionar", command=obter_selecionados, corner_radius=12, width=20, height=20, bg_color="#d9d9d9")
                 botao_obter_selecionados.place(x=600, y=265)
 
-                botao_voltar = ctk.CTkButton(frame_agenda, text="Voltar", command=voltar_para_tela_anterior, corner_radius=12, bg_color="#ffffff")
+                botao_voltar = ctk.CTkButton(frame_agenda, text="Voltar", command=voltar_para_tela_anterior, corner_radius=12, bg_color="#d9d9d9")
                 botao_voltar.place(x=300, y=520)
 
                 def obter_selecionados_final():
                     global enfermeiros_texto
                     selecionados = [enfermeiros[i][0] for i, estado in enumerate(estado_checkbox) if estado.get()]
                     enfermeiros_texto.configure(text=f"Enfermeiros - {', '.join(selecionados)}")
+
+                def validar_campo_tela():
+                    if (not cirurgiao_selecionado.get() or not anestesista_selecionado.get() or not instrumentador_selecionado.get()):
+                        messagebox.showerror("Erro", "Por favor, preencha todos os campos obrigatórios.")
+                    elif not any(estado.get() for estado in estado_checkbox):
+                        messagebox.showerror("Erro", "Selecione pelo menos um enfermeiro.")
+                    else:
+                        tela_final()
 
                 def tela_final():
                     frame_agenda.pack_forget()
@@ -517,7 +525,7 @@ def tela_home():
 
                     obter_selecionados_final()
                     
-                botao_proximo_final = ctk.CTkButton(frame_agenda, text="Proximo", corner_radius=12, command=tela_final, fg_color="#00940A", text_color="#000000", bg_color="#d9d9d9")
+                botao_proximo_final = ctk.CTkButton(frame_agenda, text="Proximo", corner_radius=12, command=validar_campo_tela, fg_color="#00940A", text_color="#000000", bg_color="#d9d9d9")
                 botao_proximo_final.place(x=630, y=520)
 
             def validar_campos():
