@@ -460,33 +460,36 @@ def tela_home():
                     label_final = ctk.CTkLabel(frame_final, bg_color="#d9d9d9", width=985, height=585, text="", fg_color="#d9d9d9", corner_radius=12)
                     label_final.place(x=10, y=10)
 
-                    label_visualização = ctk.CTkLabel(label_final,  bg_color="#ffffff", width=600, height=400, text="", fg_color="#000000", corner_radius=12)
+                    label_visualização = ctk.CTkLabel(label_final,  bg_color="#d9d9d9", width=600, height=400, text="", fg_color="#ffffff", corner_radius=15)
                     label_visualização.place(x=190, y=50)
 
-                    texto_label = ctk.CTkLabel(label_visualização, text="AGENDA", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',24,'bold'))
+                    texto_label = ctk.CTkLabel(label_visualização, text="AGENDA", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',24,'bold'))
                     texto_label.place(x=250, y=20)
 
-                    cirurgia_texto = ctk.CTkLabel(label_visualização, text=f"Tipo - {tipo_selecionado.get()}", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',16,'bold'))
-                    cirurgia_texto.place(x=20, y=100)
+                    paciente_texto = ctk.CTkLabel(label_visualização, text=f"Paciente - {entry_nome.get()}", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    paciente_texto.place(x=20, y=100)
 
-                    cirurgiao_texto = ctk.CTkLabel(label_visualização, text=f"Cirurgião - {cirurgiao_selecionado.get()}", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',16,'bold'))
-                    cirurgiao_texto.place(x=20, y=130)
+                    cirurgia_texto = ctk.CTkLabel(label_visualização, text=f"Tipo - {tipo_selecionado.get()}", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    cirurgia_texto.place(x=20, y=130)
 
-                    anestesista_texto = ctk.CTkLabel(label_visualização, text=f"Anestesista - {anestesista_selecionado.get()}", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',16,'bold'))
-                    anestesista_texto.place(x=20, y=160)
+                    cirurgiao_texto = ctk.CTkLabel(label_visualização, text=f"Cirurgião - {cirurgiao_selecionado.get()}", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    cirurgiao_texto.place(x=20, y=160)
 
-                    instrumentador_texto = ctk.CTkLabel(label_visualização, text=f"Instrumentista - {instrumentador_selecionado.get()}", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',16,'bold'))
-                    instrumentador_texto.place(x=20, y=190)
+                    anestesista_texto = ctk.CTkLabel(label_visualização, text=f"Anestesista - {anestesista_selecionado.get()}", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    anestesista_texto.place(x=20, y=190)
+
+                    instrumentador_texto = ctk.CTkLabel(label_visualização, text=f"Instrumentista - {instrumentador_selecionado.get()}", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    instrumentador_texto.place(x=20, y=220)
 
                     global enfermeiros_texto
-                    enfermeiros_texto = ctk.CTkLabel(label_visualização, text="Enfermeiros -", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',16,'bold'))
-                    enfermeiros_texto.place(x=20, y=220)
+                    enfermeiros_texto = ctk.CTkLabel(label_visualização, text="Enfermeiros -", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    enfermeiros_texto.place(x=20, y=250)
 
-                    data_texto = ctk.CTkLabel(label_visualização, text=f"Data - {entry_data_inicio.get()} Horario - {entry_horario_inicio.get()}", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',16,'bold'))
-                    data_texto.place(x=20, y=250)
+                    data_texto = ctk.CTkLabel(label_visualização, text=f"Data - {entry_data_inicio.get()} Horario - {entry_horario_inicio.get()}", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    data_texto.place(x=20, y=290)
 
-                    sala_texto = ctk.CTkLabel(label_visualização, text=f"Sala - {sala_selecionada.get()}", fg_color="transparent", text_color="#ffffff", bg_color="#000000", font=('Arial',16,'bold'))
-                    sala_texto.place(x=20, y=290)
+                    sala_texto = ctk.CTkLabel(label_visualização, text=f"Sala - {sala_selecionada.get()}", fg_color="transparent", text_color="#000000", bg_color="#ffffff", font=('Arial',16,'bold'))
+                    sala_texto.place(x=20, y=320)
 
                     def cancelado():
                         frame_final.pack_forget()
@@ -497,28 +500,13 @@ def tela_home():
 
                     def alterar():
                         frame_final.pack_forget()
-                        tela_administrador()
+                        tela_agenda()
 
                     botao_alterar = ctk.CTkButton(label_final, text="Alterar", text_color="#ffffff", width=80, hover_color="#00FFFF", command=alterar)
                     botao_alterar.place(x=450, y=460)
 
                     def concluir():
-                        dtInicio = entry_data_inicio.get()
-                        dtFim = entry_data_fim.get()
-                        status = 1
-                        nome_paciente = entry_nome.get()
-                        cpf_paciente = entry_cpf.get()
-                        data_nasc = entry_data.get()
-                        hora = entry_horario_inicio.get()
-                        fkCirurgiao = cirurgiao_selecionado.get()
-                        fkAnestesista = anestesista_selecionado.get()
-                        fkInstrumentador = instrumentador_selecionado.get()
-                        fkSala = sala_selecionada.get()
-                        fkTipo = tipo_selecionado.get()
-
-                        createCirurgia(dtInicio, dtFim, status, nome_paciente, cpf_paciente, data_nasc, hora, fkCirurgiao, fkSala, fkTipo, fkInstrumentador, fkAnestesista)
-
-                        tela_home()
+                        pass
 
                     botao_concluir = ctk.CTkButton(label_final, text="Concluir", fg_color="#2E8B57",text_color="#ffffff", width=80, hover_color="#00FF00", command=concluir)
                     botao_concluir.place(x=700, y=460)
