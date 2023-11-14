@@ -40,7 +40,6 @@ def tela_home():
         Concluidas = 0
         todosIds = obter_IDs_TodasCirurgias()
         for idCirurgia in todosIds:
-            print(read("CIRURGIA", "STATUS", idCirurgia))
             retornoStatus = read("CIRURGIA", "STATUS", idCirurgia)
             match retornoStatus[0][0]:
                 case 1:
@@ -102,7 +101,7 @@ def tela_home():
             label_agendadas = ctk.CTkLabel(label_solicitacoes, text=f"{Agendadas} - Agendadas", font=('Arial', 20), anchor="w", fg_color="#064aa4", text_color="#ffffff", corner_radius=12)
             label_agendadas.place(x=10, y=100)
 
-            label_concluidas = ctk.CTkLabel(label_solicitacoes, text=f"{Concluidas} - Concluidas", font=('Arial', 20), anchor="w", fg_color="#00bf24", text_color="#ffffff", corner_radius=12)
+            label_concluidas = ctk.CTkLabel(label_solicitacoes, text=f"{Concluidas} - Concluídas", font=('Arial', 20), anchor="w", fg_color="#00bf24", text_color="#ffffff", corner_radius=12)
             label_concluidas.place(x=10, y=150)
 
             label_canceladas = ctk.CTkLabel(label_solicitacoes, text=f"{Canceladas} - Canceladas", font=('Arial', 20), anchor="w", fg_color="#ffa800", text_color="#ffffff", corner_radius=12)
@@ -120,7 +119,7 @@ def tela_home():
     label_home = ctk.CTkLabel(frame_lateral, width=150, height=600, fg_color="#0cc0df", text="")
     label_home.place(x=0)
 
-    img_home = PhotoImage(file="cirurgia.png")
+    img_home = PhotoImage(file="Python\Cadastro_Login\cirurgia.png")
     img_reduzida = img_home.subsample(4,4)
     label_img_home = ctk.CTkLabel(label_home, image=img_reduzida, text="")
     label_img_home.place(x=10)
@@ -187,7 +186,6 @@ def tela_home():
             if (not entry_nome.get() or not entry_cpf.get() or not entry_data.get()):
                 messagebox.showerror("Erro", "Por favor, preencha todos os campos obrigatórios.")
             else:
-                print("é pra pegar")
                 tela_administrador()
 
         botao_proximo = ctk.CTkButton(frame_paciente, text="Proximo", command=validar_paciente, fg_color="#00940A", text_color="#000000", corner_radius=12, bg_color="#d9d9d9")
@@ -472,7 +470,7 @@ def tela_home():
                         frame_final.pack_forget()
                         tela_home()
 
-                    botao_cancelar = ctk.CTkButton(label_final, text="Cancelar", fg_color="#8B0000", text_color="#ffffff", width=80, hover_color="#FF0000", command=cancelado)
+                    botao_cancelar = ctk.CTkButton(label_final, text="Cancelar", fg_color="#F00000", text_color="#ffffff", width=80, hover_color="#FF0000", command=cancelado)
                     botao_cancelar.place(x=190, y=460)
 
                     def alterar():
@@ -520,7 +518,7 @@ def tela_home():
             botao_proximo = ctk.CTkButton(frame_adm_agenda, text="Proximo", command=validar_campos, fg_color="#00940A", text_color="#000000", corner_radius=12, bg_color="#d9d9d9")
             botao_proximo.place(x=600, y=460)
 
-            botao_voltar_paciente = ctk.CTkButton(frame_adm_agenda, text="Voltar", command=voltar_para_tela_anterior, fg_color="#FF0000", text_color="#000000", corner_radius=12, bg_color="#d9d9d9", hover_color="#FF6347")
+            botao_voltar_paciente = ctk.CTkButton(frame_adm_agenda, text="Voltar", command=voltar_para_tela_anterior, fg_color="#F00000", text_color="#000000", corner_radius=12, bg_color="#d9d9d9", hover_color="#FF6347")
             botao_voltar_paciente.place(x=200, y=460)
 
     botao_nova_agenda = ctk.CTkButton(frame_lateral, width=130, height=50, fg_color="#252525", text="Nova Agenda", font=('Arial',16,'bold'), command=tela_paciente)
@@ -538,7 +536,7 @@ def tela_home():
         label_agenda = ctk.CTkLabel(frame_menu_lateral, width=150, height=600, fg_color="#0cc0df", text="")
         label_agenda.place(x=0)
 
-        img_home = PhotoImage(file="cirurgia.png")
+        img_home = PhotoImage(file="Python\Cadastro_Login\cirurgia.png")
         img_reduzida = img_home.subsample(4,4)
         label_img_home = ctk.CTkLabel(label_agenda, image=img_reduzida, text="")
         label_img_home.place(x=10)
@@ -626,7 +624,7 @@ ctk.set_default_color_theme("dark-blue")
 tela = ctk.CTk()
 tela.geometry("1000x600")
 tela.title("Cadastro de Cirurgias")
-tela.iconbitmap("icone.ico")
+tela.iconbitmap("Python\Cadastro_Login\icone.ico")
 tela.resizable(False, False)
 
 frame_img = ctk.CTkFrame(tela, width=500, height=600)
@@ -635,7 +633,7 @@ frame_img.pack(side=LEFT)
 frame_login = ctk.CTkFrame(tela, width=500, height=600)
 frame_login.pack(side=RIGHT)
 
-img = PhotoImage(file="cirurgia.png")
+img = PhotoImage(file="Python\Cadastro_Login\cirurgia.png")
 Label_img = ctk.CTkLabel(frame_img, image=img, text="")
 Label_img.place(x=5, y=80)
 

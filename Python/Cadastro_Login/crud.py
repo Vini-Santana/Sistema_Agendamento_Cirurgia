@@ -58,19 +58,19 @@ def createRecepcionista(dtnascimento, nome, email, fkPrfil):
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
     
-def createPaciente(nome, dtnascimento, endereco, numCarteira, email, fkRecepcionista):
-    comando = f'INSERT INTO PACIENTE(NOME,DTNASCIMENTO,ENDERECO,NUMCARTEIRA,EMAIL,FKRECEPCIONISTA) VALUES ("{nome}","{dtnascimento}","{endereco}","{numCarteira}","{email}", {fkRecepcionista})'
+def createPaciente(nome, dtnascimento, CPF):
+    comando = f'INSERT INTO PACIENTE(NOME,DTNASCIMENTO,CPF) VALUES ("{nome}","{dtnascimento}","{CPF}")'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
-#STATUS: 1 - AGENDADA 2 - EM ANDAMENTO  3 - CANCELADA 4 - CONCLUÍDA    
+#STATUS: 1 - AGENDADA, 2 - CONCLUÍDA 3 - CANCELADA    
 def createCirurgia(dtInicio, dtFim, status, nome_paciente, cpf_paciente, data_nasc, hora, fkCirurgiao, fkSala, fkTipo, fkInstrumentador, fkAnestesista):
 
     dtInicio = datetime.strptime(dtInicio, '%d/%m/%Y').strftime('%Y-%m-%d')
     dtFim = datetime.strptime(dtFim, '%d/%m/%Y').strftime('%Y-%m-%d')
     data_nasc = datetime.strptime(data_nasc, '%d/%m/%Y').strftime('%Y-%m-%d')
 
-    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,STATUS,NOME_PACIENTE,CPF_PACIENTE,DATA_NASCIMENTO, HORA, FKCIRURGIAO,FKSALA,FKTIPO,FKINSTRUMENTADOR,FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{nome_paciente}","{cpf_paciente}","{data_nasc}","{hora}","{fkCirurgiao}","{fkSala}","{fkTipo}","{fkInstrumentador}","{fkAnestesista}")'
+    comando = f'INSERT INTO CIRURGIA(DTINICIO,DTFIM,STATUS, HORA, FKPACIENTE, FKCIRURGIAO,FKSALA,FKTIPO,FKINSTRUMENTADOR,FKANESTESISTA) VALUES ("{dtInicio}","{dtFim}","{status}","{hora}","{fkCirurgiao}","{fkSala}","{fkTipo}","{fkInstrumentador}","{fkAnestesista}")'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
 
@@ -93,7 +93,7 @@ def createTelefone(ddd, telefone, nomeDaTabela, fkRegistro):
         case 6:
             nomeDaTabela = "FKRECEPCIONISTA"
         case _:
-            print("Erro")####
+            print("Erro")
     comando = f'INSERT INTO TELEFONE(DDD,TELEFONE,{nomeDaTabela}) VALUES ({ddd},"{telefone}",{fkRegistro})'
     conexao.cursor.execute(comando)
     conexao.conexaov.commit()
