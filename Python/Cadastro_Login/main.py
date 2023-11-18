@@ -1,11 +1,11 @@
 import customtkinter as ctk
 import datetime
-import conexao
+from Log import Log
 from tkinter import *
 from tkinter import messagebox
 from datetime import datetime, timedelta, time
-from crud import obter_id, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd, createPaciente, validar_data_nascimento, cliente_existente, obter_id_tipo, obter_id_sala, cancelar, concluir
-from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio, obter_tipo_por_id, obter_nome_cirurgiao_por_id
+from crud import obter_id, obter_IDs_TodasCirurgias, read, createCirurgia, obter_cirurgias_do_bd, createPaciente, read_id_cirurgia, retorna_Id_ultima_cirurgia, validar_data_nascimento, cliente_existente, obter_id_tipo, obter_id_sala, cancelar, concluir
+from crud import obter_tipos_de_cirurgias, obter_salas, obter_cirurgiao, obter_anestesista, obter_instrumentador, buscar_enfermeiros, obter_tempo_medio, obter_tipo_por_id, obter_nome_cirurgiao_por_id, obter_id_cirurgia
 from validacoes import validaUsuarioSenha_RetornaNivelAcesso
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -127,7 +127,6 @@ def tela_home():
     label_img_home.place(x=10)
 
     def tela_paciente():
-        print("vamo que vamo")
         def voltar_para_tela_anterior():
             frame_paciente.pack_forget()
             tela_home()
@@ -392,7 +391,7 @@ def tela_home():
                 label_cirurgiao = ctk.CTkLabel(frame_agenda,text="CIRURGIÃO *", fg_color="#d9d9d9", text_color="#000000", bg_color="#d9d9d9", font=('Arial',16,'bold'))
                 label_cirurgiao.place(x=450, y=70)
 
-                cirurgiaos = obter_cirurgiao()
+                cirurgiaos = obter_cirurgiao(tipo_selecionado.get())
 
                 cirurgiao_selecionado = ctk.StringVar()
                 cirurgiao_box = ctk.CTkComboBox(frame_agenda, variable=cirurgiao_selecionado, values=cirurgiaos, 
@@ -514,6 +513,9 @@ def tela_home():
                     botao_alterar.place(x=450, y=460)
 
                     def concluir():
+                        
+                        
+                        
                         dtInicio = entry_data_inicio.get()
                         dtFim = entry_data_fim.get()
                         status = 1
@@ -531,6 +533,9 @@ def tela_home():
                         else:
                             createCirurgia(dtInicio, dtFim, status, hora, horafim, fkcirurgiao, fkSala, fktipo, fkpaciente, fkinstrumentador, fkanestesista)
                             messagebox.showinfo("Conclusão", "Cirurgia cadastrada com sucesso.")
+                            id_cirurgia = retorna_Id_ultima_cirurgia()
+                            aws = Log()
+                            aws.submit("CIRURGIA",id_cirurgia,"CREATE", "Vinicius Vanderlei")
                             tela_home()
                     
 
@@ -626,7 +631,7 @@ def tela_home():
                 botao_concluir = ctk.CTkButton(label_cirurgia, text="Concluir", command=lambda idCirurgia=cirurgia[5]: confirmar_concluir(idCirurgia), fg_color="#2E8B57",text_color="#ffffff", width=80, hover_color="#00FF00")
                 botao_concluir.place(x=630, y=60)
 
-                botao_cancelar = ctk.CTkButton(label_cirurgia, text="Cancelar", command=lambda idCirurgia=cirurgia[5]: confirmar_cancelar(idCirurgia), fg_color="#F00000", text_color="#000000", corner_radius=12, bg_color="#d9d9d9", hover_color="#FF6347")
+                botao_cancelar = ctk.CTkButton(label_cirurgia, text="Cancelar", command=lambda idCirurgia=cirurgia[5]: confirmar_cancelar(idCirurgia), fg_color="#F00000", text_color="#000000", corner_radius=12, bg_color="#8aceff", hover_color="#FF6347")
                 botao_cancelar.place(x=50, y=60)
 
                 y_pos += 120

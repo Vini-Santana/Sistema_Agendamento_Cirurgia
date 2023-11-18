@@ -103,5 +103,3 @@ def validaProfissionaisESalaDisponiveis(dtInicio, dtFim):
         raise ValueError(msg)
     else:
         return True
-    
-print(validaNomeInstrumentadorDisponivel("25/04/2023", "7:05:27", "25/04/2023", "16:05:12"))

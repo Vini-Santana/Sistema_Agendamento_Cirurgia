@@ -116,9 +116,49 @@ def read(nomeDaTabela, atributo, id):
     resultadoFim = conexao.cursor.fetchall()
     return resultadoFim
 
+def retorna_Id_ultima_cirurgia():
+    consulta = f'SELECT IDCIRURGIA FROM CIRURGIA'
+    conexao.cursor.execute(consulta)
+    idCirurgia = [row[0] for row in conexao.cursor.fetchall()]
+    print("IDcirurgia = "+str(len(idCirurgia)))
+    comando = f"SELECT IDCIRURGIA FROM CIRURGIA WHERE IDCIRURGIA = {len(idCirurgia)}"
+    conexao.cursor.execute(comando)
+    cirurgias = conexao.cursor.fetchall()
+    #return cirurgias
+    return str(len(idCirurgia))
+
+
+def read_id_cirurgia(nome_da_tabela, nome_coluna, nome):
+    try:
+        consulta = f'SELECT {nome_coluna} FROM {nome_da_tabela} WHERE dtinicio = "{nome}"'
+        conexao.cursor.execute(consulta)
+        resultado = conexao.cursor.fetchone()
+        print(resultado)
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Erro ao executar a consulta: {e}")
+        return None
+    finally:
+        # Adicione essa linha para garantir que os resultados sejam lidos e processados
+        conexao.cursor.fetchall()
+
 def obter_id(nome_da_tabela, id_nome_tabela, nome):
     try:
         consulta = f'SELECT {id_nome_tabela} FROM {nome_da_tabela} WHERE NOME = "{nome}"'
+        conexao.cursor.execute(consulta)
+        resultado = conexao.cursor.fetchone()
+        print(resultado)
+        return resultado[0] if resultado else None
+    except Exception as e:
+        print(f"Erro ao executar a consulta: {e}")
+        return None
+    finally:
+        # Adicione essa linha para garantir que os resultados sejam lidos e processados
+        conexao.cursor.fetchall()
+        
+def obter_id_cirurgia(nome_da_tabela, id_nome_tabela, nome):
+    try:
+        consulta = f'SELECT {id_nome_tabela} FROM {nome_da_tabela} WHERE DTINICIO = "{nome}"'
         conexao.cursor.execute(consulta)
         resultado = conexao.cursor.fetchone()
         return resultado[0] if resultado else None
@@ -173,11 +213,12 @@ def obter_salas():
     tipos_salas = [str(row[0]) for row in conexao.cursor.fetchall()]
     return tipos_salas
 
-def obter_cirurgiao():
-    comando = "SELECT NOME FROM CIRURGIAO"
-    conexao.cursor.execute(comando)
+def obter_cirurgiao(tipo):
+    comando = "SELECT c.NOME FROM CIRURGIAO c WHERE c.idcirurgiao IN (SELECT ec.fkcirurgiao FROM ESPECIALIZACAO_CIRURGIAO ec WHERE ec.fkespecializacao IN (SELECT tc.IDTIPO FROM TIPO_CIRURGIA tc WHERE tc.TIPOCIRURGIA = %s))"
+    conexao.cursor.execute(comando, (tipo,))
     cirurgiaos = [row[0] for row in conexao.cursor.fetchall()]
     return cirurgiaos
+
 
 def obter_anestesista():
     comando = "SELECT NOME FROM ANESTESISTA"
@@ -210,7 +251,7 @@ def obter_tempo_medio(tipo_cirurgia):
         return None
     
 def obter_cirurgias_do_bd():
-    comando = "SELECT FKTIPO, FKCIRURGIAO, DTINICIO, HORA, STATUS, IDCIRURGIA FROM CIRURGIA"
+    comando = "SELECT FKTIPO, FKCIRURGIAO, DTINICIO, HORAINICIO, STATUS, IDCIRURGIA FROM CIRURGIA"
     conexao.cursor.execute(comando)
     cirurgias = conexao.cursor.fetchall()
     return cirurgias
